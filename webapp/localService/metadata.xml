@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema Namespace="ZEWA_GENRAL_INFO_PROJ_SRV" xml:lang="en" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <EntityType Name="EWA_F4_HELP" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Seqno"/>
+                    <PropertyRef Name="AttrName"/>
+                </Key>
+                <Property Name="Seqno" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Sequence Number" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="AttrName" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Param1" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Param2" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Parameter2" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="AttrValue" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="Field Value" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="EWA_F4_PRGM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Param2"/>
+                </Key>
+                <Property Name="Param2" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Parameter2" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="AttrValue" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="Field Value" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="EWA_F4_EWATYPE" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="PARAM2"/>
+                </Key>
+                <Property Name="PARAM2" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Parameter Key" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ATTR_VALUE" Type="Edm.String" MaxLength="255" sap:unicode="false" sap:label="Attribute Value" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SAPORDER_VALUE" Type="Edm.String" MaxLength="255" sap:unicode="false" sap:label="SAP Order Value" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="EWA_F4_WBSELEMENT" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="PSPNR"/>
+                </Key>
+                <Property Name="PSPNR" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="WBS Element" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="POST1" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="USR02" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Revision" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="EWA_F4_WPF" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="MLPF"/>
+                </Key>
+                <Property Name="MLPF" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:label="Work Package Funding" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="PSPNR" Type="Edm.String" MaxLength="255" sap:unicode="false" sap:label="WBS Element" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="EWA_WPF" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="PSPNR"/>
+                </Key>
+                <Property Name="PSPNR" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="WBS Element" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MLNO" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:label="Work Package Funding" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityContainer Name="ZEWA_GENRAL_INFO_PROJ_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="EWA_F4Help" EntityType="ZEWA_GENRAL_INFO_PROJ_SRV.EWA_F4_HELP" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="EWA_F4_PRGMSet" EntityType="ZEWA_GENRAL_INFO_PROJ_SRV.EWA_F4_PRGM" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="EWA_F4_EWATYPESet" EntityType="ZEWA_GENRAL_INFO_PROJ_SRV.EWA_F4_EWATYPE" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="EWA_F4_WBSELEMENTSet" EntityType="ZEWA_GENRAL_INFO_PROJ_SRV.EWA_F4_WBSELEMENT" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="EWA_F4_WPFSet" EntityType="ZEWA_GENRAL_INFO_PROJ_SRV.EWA_F4_WPF" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="EWA_WPFSet" EntityType="ZEWA_GENRAL_INFO_PROJ_SRV.EWA_WPF" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+            </EntityContainer>
+            <atom:link rel="self" href="http://parkerds1vm:8001/sap/opu/odata/sap/ZEWA_GENRAL_INFO_PROJ_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+            <atom:link rel="latest-version" href="http://parkerds1vm:8001/sap/opu/odata/sap/ZEWA_GENRAL_INFO_PROJ_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

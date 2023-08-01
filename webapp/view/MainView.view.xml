@@ -1,0 +1,326 @@
+<mvc:View controllerName="com.parker.ewaformtemp.controller.MainView" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+	xmlns:f="sap.ui.layout.form" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:semantic="sap.m.semantic" xmlns:l="sap.ui.layout"
+	xmlns:u="sap.ui.unified" xmlns:ui="sap.ca.ui">
+	<semantic:FullscreenPage title="{i18n>appTitle}" showNavButton="false" navButtonPress="onNavButtonPress">
+		<IconTabBar id="idIconTabBarNoIcons" expanded="{device>/isNoPhone}" class="sapUiResponsiveContentPadding">
+			<items>
+				<IconTabFilter text="{i18n>projectInfo}" key="projectInformation">
+					<MessageStrip text="{i18n>msgStripText}"/>
+					<f:SimpleForm class="formHeader" title="{i18n>genInfo}" editable="true" id="mainForm" layout="ResponsiveGridLayout" labelSpanXL="4"
+						labelSpanL="4" labelSpanM="4" labelSpanS="4" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0"
+						columnsXL="3" columnsL="3" columnsM="3">
+						<f:content>
+							<core:Title text=""/>
+							<Label text="{i18n>wbsElement}"/>
+							<ComboBox showSecondaryValues="true" filterSecondaryValues="true" selectedKey="{ViewModel>/ZwbsElement}"
+								items="{ path: '/EWA_F4_WBSELEMENTSet' }" change="handleWBSChange">
+								<core:ListItem text="{PSPNR}" key="{PSPNR}" additionalText="{POST1}"/>
+							</ComboBox>
+							<Label text="{i18n>prog}"/>
+							<Input editable="false" value="{ViewModel>/ZprogramCode}"/>
+							<!-- <ComboBox selectedKey="{ViewModel>/ZprogramCode}" items="{ path: '/EWA_F4_PRGMSet' }" change="handleProgramChange">
+								<core:Item text="{AttrValue}" key="{Param2}"/>
+							</ComboBox> -->
+							<Label text="{i18n>cust}"/>
+							
+							<!-- <ComboBox showSecondaryValues="true" selectedKey="{ViewModel>/Zcustomer}" filterSecondaryValues="true"
+								items="{ path: '/EWA_F4_CUSTOMERSet' }" change="handleCustomerChange">
+								<core:ListItem text="{NAME1}" key="{KUNNR}" additionalText="{V<Input editable="false" value="{ViewModel>/Zcustomer}"/>KORG}"/>
+							</ComboBox> -->
+							<Label text="{i18n>prism}"/>
+							<Input editable="false" value="{ViewModel>/ZprismProjid}"/>
+							<!-- <ComboBox required="true" showSecondaryValues="true" selectedKey="{ViewModel>/ZprismProjid}" filterSecondaryValues="true"
+								items="{ path: '/EWA_F4_PRISMPROJECT_IDSet' }" change="handleCustomerChange">
+								<core:ListItem text="{ZPRISM_DESC}" additionalText="{ZPRISM_PROJID}" key="{ZPRISM_PROJID}"/>
+							</ComboBox> -->
+							<!-- <Input required="true" value="{ViewModel>/ZprismProjid}"/> -->
+							<Label text="{i18n>engPMO}"/>
+							<ComboBox selectedKey="{ViewModel>/ZewaEngpmo}" items="{ path: '/EWA_F4_TYPESet' }" change="handleEngPMOChange">
+								<core:Item text="{ATTR_VALUE}" key="{PARAM2}"/>
+							</ComboBox>
+							<Label text="{i18n>workDesc}"/>
+							<Input value="{ViewModel>/ZworkDesc}"/>
+							<Label text="{i18n>ewaTyp}"/>
+							<ComboBox required="true" id="ewatype" selectedKey="{ViewModel>/ZewaType}" items="{ path: '/EWA_F4_EWATYPESet' }" change="handleEWAChange"
+								showSecondaryValues="false" filterSecondaryValues="false">
+								<core:ListItem text="{ATTR_VALUE}" key="{PARAM2}" tooltip="{ATTR_VALUE_INFO}" additionalText="{SAPORDER_VALUE}"/>
+							</ComboBox>
+							<Label text="{i18n>wrkTyp}"/>
+							<Input id="wrktype" value="{ViewModel>/ZworkOrdtype}"/>
+							<Label text="{i18n>partUnit}"/>
+							<Input showValueHelp="true" valueHelpRequest="showMaterialValueHelp" value="{ViewModel>/ZpartnoUnitdesc}"/>
+							<Label text="{i18n>platform}"/>
+							<ComboBox selectedKey="{ViewModel>/Zplatform}" items="{ path: '/EWA_F4_PLATFORMSet' }" change="handleProgramChange"
+								showSecondaryValues="false" filterSecondaryValues="false">
+								<core:ListItem text="{ZPLATFORM}" key="{ZPLATFORM}"/>
+							</ComboBox>
+							<!-- <Input value="{ViewModel>/Zplatform}" id="platform" /> -->
+							<Label text="{i18n>funded}"/>
+							<Text text="{ViewModel>/Zfunded}"/>
+							<!-- <ComboBox  selectedKey="{ViewModel>/Zfunded}" >
+                                <core:Item key="Yes" text="Yes" />
+                                <core:Item key="No" text="No" />
+                            </ComboBox> -->
+							<!-- <Label text="{i18n>wrkPkgFund}" />
+                            <Input value="{ViewModel>/ZworkPackfund}" /> -->
+							<!-- <ComboBox selectedKey="{ViewModel>/ZworkPackfund}" items="{
+				path: 'WorkPackage>/WrkPakageSet'
+			}"  change="handleWrkPackage">
+                                <core:Item text="{WorkPackage>MLNO}" key="{WorkPackage>MLNO}" />
+                            </ComboBox> -->
+							<Label text="{i18n>intendEWA}"/>
+							<Input value="{ViewModel>/ZintEwano}"/>
+							<core:Title text=""/>
+							<Label text="{i18n>revAmend}"/>
+							<Input editable="true" value="{ViewModel>/ZrevAmend}"/>
+							<Label text="{i18n>prjMan}"/>
+							<Input placeholder="Enter SAP Pernr Number" value="{ViewModel>/ZprojMgr}"/>
+							<Label text="{i18n>curPrjMan}"/>
+							<Input placeholder="Enter SAP Pernr Number" value="{ViewModel>/ZcurrProjmgr}"/>
+							<Label text="{i18n>ppca}"/>
+							<Input value="{ViewModel>/Zppca}"/>
+							<Label text="{i18n>cam}"/>
+							<Input value="{ViewModel>/Zcam}"/>
+							<Label text="{i18n>planStrtDate}"/>
+							<DatePicker valueFormat="MM/dd/yyyy" displayFormat="MM/dd/yyyy"
+								value="{ path: 'ViewModel>/ZplanStartdate', type: 'sap.ui.model.type.Date', formatOptions: { style: 'short', pattern: 'MM/dd/yyyy' } }"/>
+							<Label text="{i18n>planEndDate}"/>
+							<DatePicker valueFormat="MM/dd/yyyy" displayFormat="MM/dd/yyyy"
+								value="{ path: 'ViewModel>/ZplnEnddate', type: 'sap.ui.model.type.Date', formatOptions: { style: 'short', pattern: 'MM/dd/yyyy' } }"/>
+							<!-- <Label text="{i18n>operaCode}"/>
+							<Input editable="false" id="operCode" value="{ViewModel>/ZoperCode1}"/> -->
+							<Label text="{i18n>planWrkPkgHrs}"/>
+							<Input value="{ViewModel>/ZplanWorkPack}" change="getApprovers"/>
+							<Label text="{i18n>planWrkHrs}"/>
+							<Input value="{ViewModel>/ZplanWph}" />
+							<!-- <Label text="{i18n>matDollars}" />
+                            <Input value="{ViewModel>/ZmatDollars}"/>
+                            <Label text="{i18n>costCent}" />
+                            <ComboBox showSecondaryValues="true" selectedKey="{ViewModel>/Zcostcenter}" filterSecondaryValues="true" items="{
+				path: '/EWA_F4_COSTCENTERSet'
+			}" change="handleCostCentreChange" >
+                                <core:ListItem text="{KOSTL}" key="{KOSTL}" additionalText="{LTEXT}" />
+                            </ComboBox> -->
+							<core:Title text=""/>
+							<!-- <Label text="{i18n>wrkCentre}" />
+                            <ComboBox required="true" showSecondaryValues="false" selectedKey="{ViewModel>/Zworkcenter}" filterSecondaryValues="false" items="{
+				path: '/EWA_F4_WORKCENTERSSet'
+			}" change="handleCustomerChange" >
+                                <core:ListItem text="{ARBPL}" key="{ARBPL}"  />
+                            </ComboBox> -->
+							<!-- <Input value="{ViewModel>/Zworkcenter}"/> -->
+							<Label text="{i18n>rfaNumber}"/>
+							<Input value="{ViewModel>/ZrfaNo}"/>
+							<Label text="{i18n>ratSOW}"/>
+							<TextArea rows="17" value="{ViewModel>/ZratioSow}"/>
+						</f:content>
+					</f:SimpleForm>
+					<Panel expandable="true" headerText="{i18n>supportHrs}" width="auto">
+						<content>
+							<Table id="summaryHrs" width="50%" items="{ path: 'ViewModel>/ProjinfoToSummary' }">
+								<columns>
+									<Column>
+										<Text text="Labor Hours"/>
+									</Column>
+									<Column>
+										<Text text="Operations"/>
+										<footer>
+											<Label text="Total"/>
+										</footer>
+									</Column>
+									<Column hAlign="Center" width="12em">
+										<Text text="Total"/>
+										<footer>
+											<Input editable="false"/>
+										</footer>
+									</Column>
+									<Column visible="false" hAlign="Center" width="12em">
+										<Text text=""/>
+									</Column>
+									<Column visible="false" hAlign="Center" width="12em">
+										<Text text="Total"/>
+									</Column>
+								</columns>
+								<items>
+									<ColumnListItem vAlign="Middle">
+										<cells>
+											<Text text="{ViewModel>ZsumSuphrsDesc}"/>
+											<Text text="{ViewModel>ZoperCode}"/>
+											<Input type="Number" value="{ViewModel>Zhours}" change="calculateTotalHrs"/>
+											<Text text="{ViewModel>ZsumSuphrs}"/>
+											<Text text="{ViewModel>ZtotHours/}"/>
+										</cells>
+									</ColumnListItem>
+								</items>
+							</Table>
+							<Table id="costHrs" width="50%" items="{ path: 'ViewModel>/ProjinfoToSummaryCost' }">
+								<columns>
+									<Column>
+										<Text/>
+									</Column>
+									<Column>
+										<Text/>
+										<footer>
+											<Label text="Total"/>
+										</footer>
+									</Column>
+									<Column hAlign="Center" width="12em">
+										<Text/>
+										<footer>
+											<Input editable="false"/>
+										</footer>
+									</Column>
+									<Column visible="false" hAlign="Center" width="12em">
+										<Text text=""/>
+									</Column>
+									<Column visible="false" hAlign="Center" width="12em">
+										<Text/>
+									</Column>
+								</columns>
+								<items>
+									<ColumnListItem vAlign="Middle">
+										<cells>
+											<Text text="{ViewModel>ZsumSupCostDes}"/>
+											<Text/>
+											<Input type="Number" value="{ViewModel>Zcost}" change="calculateCostHrs"/>
+											<Text text="{ViewModel>ZsumSupCostCode}"/>
+											<Text text="{ViewModel>ZtotalCost/}"/>
+										</cells>
+									</ColumnListItem>
+								</items>
+							</Table>
+						</content>
+					</Panel>
+				</IconTabFilter>
+				<IconTabFilter text="{i18n>rdiconTab}" key="taxCredit">
+					<f:SimpleForm class="formHeader" editable="true" layout="ResponsiveGridLayout" labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="4"
+						adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="3" columnsL="3" columnsM="3">
+						<f:content>
+							<core:Title text=""/>
+							<Label text="{i18n>ewaTyp} "/>
+							<Text id="ewaTypTxt"/>
+							<Label text="{i18n>qual} "/>
+							<Text text="{ViewModel>/ProjinfoToRd/0/ZrdQual}" id="qualified"/>
+							<core:Title text=""/>
+							<core:Title text=""/>
+						</f:content>
+					</f:SimpleForm>
+					<f:SimpleForm id="rdsection1" class="formHeader" title="{i18n>rd}" editable="true" layout="ResponsiveGridLayout" labelSpanXL="4"
+						labelSpanL="4" labelSpanM="4" labelSpanS="4" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0"
+						columnsXL="1" columnsL="1" columnsM="1">
+						<f:content>
+							<core:Title text=""/>
+							<Label wrapping="true" text="{i18n>rdq0}"/>
+							<MultiComboBox selectedKeys="{ViewModel>/ProjinfoToRd/0/ZrdQualact}" id="rdq0MultiCombo" width="45%" items="{ path: '/EWA_F4_QUAL_ACTSet' }">
+								<core:Item key="{PARAM2}" text="{ATTR_VALUE}"/>
+							</MultiComboBox>
+							<Label wrapping="true" text="{i18n>rdq1}"/>
+							<ComboBox selectedKey="{ViewModel>/ProjinfoToRd/0/ZrdAagQ1}" width="45%" change="validateSelection">
+								<core:Item key="Yes" text="Yes"/>
+								<core:Item key="No" text="No"/>
+							</ComboBox>
+							<Label wrapping="true" text="{i18n>rdq2}"/>
+							<ComboBox selectedKey="{ViewModel>/ProjinfoToRd/0/ZrdDivisionQ2}" width="45%" change="validateSelection">
+								<core:Item key="Yes" text="Yes"/>
+								<core:Item key="No" text="No"/>
+							</ComboBox>
+							<Label wrapping="true" text="{i18n>rdq3}"/>
+							<MultiComboBox selectedKeys="{ViewModel>/ProjinfoToRd/0/ZrdActivitiesQ3}" id="rdq3MultiCombo" width="45%"
+								items="{ path: '/EWA_F4_RD_ACTIVITIESSet' }">
+								<core:Item key="{PARAM2}" text="{ATTR_VALUE}"/>
+							</MultiComboBox>
+							<Label wrapping="true" text="{i18n>rdq4}"/>
+							<MultiComboBox selectedKeys="{ViewModel>/ProjinfoToRd/0/ZrdActPerfQ4}" id="rdq4MultiCombo" width="45%"
+								items="{ path: '/EWA_RD_BUSCOMPONENTSet' }">
+								<core:Item key="{PARAM2}" text="{ATTR_VALUE}"/>
+							</MultiComboBox>
+							<core:Title text=""/>
+						</f:content>
+					</f:SimpleForm>
+					<f:SimpleForm id="rdsection2" class="formHeader" title="{i18n>rd1}" editable="true" layout="ResponsiveGridLayout" labelSpanXL="4"
+						labelSpanL="4" labelSpanM="4" labelSpanS="4" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0"
+						columnsXL="1" columnsL="1" columnsM="1">
+						<f:content>
+							<core:Title text=""/>
+							<Label wrapping="true" text="{i18n>rd1_1}"/>
+							<ComboBox selectedKey="{ViewModel>/ProjinfoToRd/0/ZrdSpecContract}" change="validateSelection" width="45%">
+								<core:Item key="Yes" text="Yes"/>
+								<core:Item key="No" text="No"/>
+							</ComboBox>
+							<Label wrapping="true" text="{i18n>rd1_2}"/>
+							<ComboBox selectedKey="{ViewModel>/ProjinfoToRd/0/ZrdServEffort}" change="validateSelection" width="45%">
+								<core:Item key="Yes" text="Yes"/>
+								<core:Item key="No" text="No"/>
+							</ComboBox>
+							<Label wrapping="true" text="{i18n>rd1_3}"/>
+							<ComboBox selectedKey="{ViewModel>/ProjinfoToRd/0/ZrdTypeCert}" width="45%" change="validateSelection">
+								<core:Item key="Yes" text="Yes"/>
+								<core:Item key="No" text="No"/>
+							</ComboBox>
+							<core:Title text=""/>
+						</f:content>
+					</f:SimpleForm>
+					<f:SimpleForm id="rdsection3" class="formHeader" title="{i18n>pir}" editable="true" layout="ResponsiveGridLayout" labelSpanXL="4"
+						labelSpanL="4" labelSpanM="4" labelSpanS="4" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0"
+						columnsXL="1" columnsL="1" columnsM="1">
+						<f:content>
+							<core:Title text=""/>
+							<Label wrapping="true" text="{i18n>pir}"/>
+							<ComboBox selectedKey="{ViewModel>/ProjinfoToRd/0/ZrdPir}" width="45%" change="validateSelection">
+								<core:Item key="Yes" text="Yes"/>
+								<core:Item key="No" text="No"/>
+							</ComboBox>
+							<core:Title text=""/>
+							<core:Title text=""/>
+						</f:content>
+					</f:SimpleForm>
+				</IconTabFilter>
+				<IconTabFilter text="{i18n>attach}" key="attachment">
+					<l:VerticalLayout>
+						<u:FileUploader id="fileUploader" name="myFileUpload" uploadUrl="upload/" tooltip="Upload your file to the local server"
+							uploadComplete="handleUploadComplete"/>
+						<Button text="Upload File" press="handleUploadPress"/>
+					</l:VerticalLayout>
+				</IconTabFilter>
+				<IconTabFilter text="{i18n>approvers}" key="approvers">
+					<Table id="apprTable" width="50%" items="{ path: 'ViewModel>/ProjinfoToApprovers' }">
+						<columns>
+							<Column>
+								<Text text="Approver Id"/>
+							</Column>
+							<Column >
+								<Text text="Approver Name"/>
+							</Column>
+							<Column >
+								<Text text="Approver Role"/>
+							</Column>
+							<Column >
+								<Text text="Status"/>
+							</Column>
+							<Column >
+								<Text text="Date"/>
+							</Column>
+						</columns>
+						<items>
+							<ColumnListItem vAlign="Middle">
+								<cells>
+									<Text text="{ViewModel>ZapprId}"/>
+									<Text text="{ViewModel>ZapprName}"/>
+									<Text text="{ViewModel>ZewaApprRole}"/>
+									<Text text="{ViewModel>Zstatus}"/>
+									<Text text="{ path: 'ViewModel>/ZapprDate', type: 'sap.ui.model.type.Date', formatOptions: { style: 'short', pattern: 'MM/dd/yyyy' } }"/>
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+				</IconTabFilter>
+			</items>
+		</IconTabBar>
+		<semantic:customFooterContent>
+			<Button id="apprbtn" text="Approve" visible="false" type="Accept"/>
+			<Button id="rejbtn" text="Reject" visible="false" type="Reject"/>
+			<Button id="sbtbtn" text="Submit" press="handleSubmit"/>
+			<Button id="draftbtn" press="handleSubmit" text="Save as Draft"/>
+		</semantic:customFooterContent>
+	</semantic:FullscreenPage>
+</mvc:View>

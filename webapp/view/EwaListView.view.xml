@@ -1,0 +1,96 @@
+<mvc:View controllerName="com.parker.ewaformtemp.controller.EwaListView" xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+	xmlns:f="sap.ui.layout.form" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:semantic="sap.m.semantic" xmlns:l="sap.ui.layout"
+	xmlns:u="sap.ui.unified" xmlns:ui="sap.ca.ui">
+	<semantic:FullscreenPage title="{i18n>appList}" showNavButton="false" navButtonPress="onNavButtonPress">
+		<f:SimpleForm class="formHeader" layout="ResponsiveGridLayout" labelSpanXL="4" labelSpanL="4" labelSpanM="12" labelSpanS="12"
+			adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="3" columnsL="3" columnsM="3"
+			singleContainerFullSize="false">
+			<f:content>
+				<core:Title text=""/>
+				<Label class="sapUiSmallMarginTop" text="WBS Element"/>
+				<ComboBox id="wbsSearchKey" class="sapUiTinyMarginTop" showSecondaryValues="true" filterSecondaryValues="true" items="{ path: '/EWA_F4_WBSELEMENTSet' }">
+					<core:ListItem text="{PSPNR}" key="{PSPNR}" additionalText="{POST1}"/>
+				</ComboBox>
+				<Label class="sapUiSmallMarginTop" text="Network Order"/>
+				<Input class="sapUiTinyMarginTop" value=""/>
+				<core:Title text=""/>
+				<Label class="sapUiSmallMarginTop" text="Customer"/>
+				<Input  class="sapUiTinyMarginTop" id="custIdInput" placeholder="Type Here"  suggest="onSuggestItems1"
+							suggestionItemSelected="onSuggestionItemSelected" suggestionRows="{path: '/EWA_F4_KUNNRSet'}" showTableSuggestionValueHelp="false"
+							showSuggestion="true" valueHelpRequest="onClickCusValueHelp" showValueHelp="true">
+							<suggestionColumns>
+								<Column>
+									<Label text="ID"/>
+								</Column>
+								<Column hAlign="Center">
+									<Label text="Description"/>
+								</Column>
+								
+							</suggestionColumns>
+							<suggestionRows>
+								<ColumnListItem>
+									<Label text="{Kunnr}"/>
+									<Label text="{Mcod1}"/>
+									
+								</ColumnListItem>
+							</suggestionRows>
+						</Input>
+				<Label class="sapUiSmallMarginTop" text="Prism Id"/>
+				<Input id="prismSearchKey" class="sapUiTinyMarginTop" value=""/>
+				<core:Title text=""/>
+				<Label class="sapUiSmallMarginTop" text="Created Date"/>
+				<DatePicker id="createdDate" valueFormat="yyyy-MM-dd" displayFormat="yyyy-MM-dd" class="sapUiTinyMarginTop" value="{path: '',type:'sap.ui.model.type.Date', formatOptions : { style:'medium', UTC: true}}" ></DatePicker>
+				<Label class="sapUiSmallMarginTop" text="Status"/>
+				<ComboBox id="statusSearchKey" class="sapUiTinyMarginTop" showSecondaryValues="false" filterSecondaryValues="false" items="{ path: '/EWA_F4_STATUSSet' }">
+					<core:ListItem text="{StatusText}" key="{Status}" />
+				</ComboBox>
+				<Label class="sapUiSmallMarginTop" text=""/>
+				<Button class="sapUiTinyMarginTop" press="onSearch" text="Go"/>
+				<core:Title text=""/>
+			</f:content>
+		</f:SimpleForm>
+		<Table id="ewaDataTable" items="{ path: '/EWA_HEADEROINFOSet' }">
+			<columns>
+				<Column visible="true">
+					<Text text="Prism ID"/>
+				</Column>
+				<Column>
+					<Text text="WBS Element"/>
+				</Column>
+				<Column>
+					<Text text="Network Order"/>
+				</Column>
+				<Column>
+					<Text text="Requestor Name"/>
+				</Column>
+				<Column >
+					<Text text="Customer"/>
+				</Column>
+				<Column >
+					<Text text="Created Date"/>
+				</Column>
+				<Column >
+					<Text text="Status"/>
+				</Column>
+			</columns>
+			<items>
+				<ColumnListItem type="Navigation" press="handleLineItemPress" vAlign="Middle">
+					<cells>
+						<Text text="{ZewaNo}"/>
+						<Text text="{ZwbsElement}"/>
+						<Text text="{ZproductionOrd}"/>
+						<Text text="{ZrequestorName}"/>
+						<Text text="{ZcustomerName}"/>
+						<Text text="{parts:[{path:'ZcreationDate'}], formatter:'com.parker.ewaformtemp.utils.Formatter.convertStringtoDate'}"/>
+						<!-- text="{parts:[{path:'ZcreationDate'}], formatter:'com.parker.ewaformtemp.utils.Formatter.convertStringtoDate'}" -->
+						<!-- <Text text="{path:'ZcreationDate', type:'sap.ui.model.type.Date', formatOptions : { style:'medium', UTC: true}}"/> -->
+						<Text text="{ZstatusText}"/>
+					</cells>
+				</ColumnListItem>
+			</items>
+		</Table>
+		<semantic:customFooterContent>
+			<Button id="createbtn" press="handlCreateNew" text="Create"/>
+		</semantic:customFooterContent>
+	</semantic:FullscreenPage>
+</mvc:View>

@@ -1,0 +1,41 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<TableSelectDialog
+		id="myDialog"
+		noDataText="No Material Found"
+		title="Select Material"
+		search="handleSearch"
+        multiSelect="false"
+		searchPlaceholder="Enter Plant Number and Click on Search"
+		confirm="handleConfirm"
+		cancel="handleClose"
+		items="{
+			path : 'MaterialModel>/MaterialSet'
+			
+		}">
+		<ColumnListItem vAlign="Middle">
+			<cells>
+				
+				<Text text="{MaterialModel>Matnr}" />
+				<Text text="{MaterialModel>Maktg}" />
+				
+			</cells>
+		</ColumnListItem>
+		<columns>
+			<Column>
+				<header>
+					<Text text="Material Number" />
+				</header>
+			</Column>
+			<Column >
+				<header>
+					<Text text="Material Description" />
+				</header>
+			</Column>
+			
+			
+			
+		</columns>
+	</TableSelectDialog>
+</core:FragmentDefinition>

@@ -1,0 +1,41 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<TableSelectDialog
+		id="myDialog"
+		noDataText="No Customer Found"
+		title="Select Customer"
+		search="handleSearch"
+        multiSelect="false"
+		searchPlaceholder="Enter Customer Number and Click on Search"
+		confirm="handleConfirm"
+		cancel="handleClose"
+		items="{
+			path : 'CustomerModel>/CustomerSet'
+			
+		}">
+		<ColumnListItem vAlign="Middle">
+			<cells>
+				
+				<Text text="{CustomerModel>Kunnr}" />
+				<Text text="{CustomerModel>Mcod1}" />
+				
+			</cells>
+		</ColumnListItem>
+		<columns>
+			<Column>
+				<header>
+					<Text text="ID" />
+				</header>
+			</Column>
+			<Column >
+				<header>
+					<Text text="Description" />
+				</header>
+			</Column>
+			
+			
+			
+		</columns>
+	</TableSelectDialog>
+</core:FragmentDefinition>
