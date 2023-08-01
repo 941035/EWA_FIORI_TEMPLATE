@@ -36,6 +36,7 @@ sap.ui.define([
                 var that = this;
                 var selectedItemBindingPath = oEvent.getSource().getBindingContext().getPath();
                 var itemData = this.oDataModel.getProperty(selectedItemBindingPath);
+                this.ewaNo = itemData.ZewaNo;
                 this.oDataModel.read("/EWA_PROJECT_INFOSet", {
                     urlParameters: {
                         "$filter": "ZewaNo eq '" + itemData.ZewaNo + "'",
@@ -44,15 +45,15 @@ sap.ui.define([
                     success: function (oData) {
                       that.oViewModel.setData(oData.results[0]);
                       that.oViewModel.getData().ProjinfoToRd = oData.results[0].ProjinfoToRd.results;
-                      that.oViewModel.getData().ProjinfoToApprovers = oData.results[0].ProjinfoToApprovers.results;
+                    //   that.oViewModel.getData().ProjinfoToApprovers = oData.results[0].ProjinfoToApprovers.results;
                       that.oViewModel.getData().ProjinfoToSummaryCost = oData.results[0].ProjinfoToSummaryCost.results;
                       that.oViewModel.getData().ProjinfoToSummary = oData.results[0].ProjinfoToSummary.results;
                     //   that.oViewModel.getData().ProjinfoToRd[0].ZoperCode = that.setMultipleKey(oData.results[0].ZoperCode);
                       that.oViewModel.getData().ProjinfoToRd[0].ZrdQualact = that.setMultipleKey(oData.results[0].ProjinfoToRd[0].ZrdQualact);
                       that.oViewModel.getData().ProjinfoToRd[0].ZrdActivitiesQ3 = that.setMultipleKey(oData.results[0].ProjinfoToRd[0].ZrdActivitiesQ3);
                       that.oViewModel.getData().ProjinfoToRd[0].ZrdActPerfQ4 = that.setMultipleKey(oData.results[0].ProjinfoToRd[0].ZrdActPerfQ4);
-                      
-                      that.getOwnerComponent().getRouter().navTo("RouteMainView");
+                      that.getApprovers();
+                    //   that.getOwnerComponent().getRouter().navTo("RouteMainView");
                     },
                     error: function (oError) {
                         sap.m.MessageBox.error("Error while fetching EWA Data");
@@ -178,7 +179,28 @@ sap.ui.define([
                     return originalDate;
                 }
                 return null;
-            }
+            },
+            getApprovers: function(oEvent){
+                var that = this;
+                
+                this.oDataModel.read("/EWA_MAT_DOLLAR_APPROVERSSet", {
+                    urlParameters: {
+                        "$filter": "ZewaNo eq '" + this.ewaNo + "'"
+                      
+                    },
+                    
+                    success: function (oData) {
+                        that.oViewModel.getData().ProjinfoToApprovers = oData.results;
+                        that.oViewModel.refresh(true);
+                        that.getOwnerComponent().getRouter().navTo("RouteMainView");
+                    },
+                    error: function (oError) {
+                        sap.m.MessageBox.error("Error while fetching Approvers");
+                        console.log(oError);
+
+                    }
+                });
+            },
 
             
         });

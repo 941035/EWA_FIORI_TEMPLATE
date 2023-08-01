@@ -90,9 +90,9 @@
 							<!-- <Label text="{i18n>operaCode}"/>
 							<Input editable="false" id="operCode" value="{ViewModel>/ZoperCode1}"/> -->
 							<Label text="{i18n>planWrkPkgHrs}"/>
-							<Input value="{ViewModel>/ZplanWorkPack}" change="getApprovers"/>
+							<Input value="{ViewModel>/ZplanWph}" change="getApprovers"/>
 							<Label text="{i18n>planWrkHrs}"/>
-							<Input value="{ViewModel>/ZplanWph}" />
+							<Input value="{ViewModel>/ZmatDollars}" />
 							<!-- <Label text="{i18n>matDollars}" />
                             <Input value="{ViewModel>/ZmatDollars}"/>
                             <Label text="{i18n>costCent}" />

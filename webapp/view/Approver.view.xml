@@ -90,9 +90,9 @@
 							<Label text="{i18n>operaCode}"/>
 							<Input editable="false" id="operCode" value="{ViewModel>/ZoperCode1}"/>
 							<Label text="{i18n>planWrkPkgHrs}"/>
-							<Input value="{ViewModel>/ZplanWorkPack}" editable="false"/>
-							<Label text="{i18n>planWrkHrs}" />
 							<Input value="{ViewModel>/ZplanWph}" editable="false"/>
+							<Label text="{i18n>planWrkHrs}" />
+							<Input value="{ViewModel>/ZmatDollars}" editable="false"/>
 							<!-- <Label text="{i18n>matDollars}" />
                             <Input value="{ViewModel>/ZmatDollars}"/>
                             <Label text="{i18n>costCent}" />
@@ -313,10 +313,10 @@
 			</items>
 		</IconTabBar>
 		<semantic:customFooterContent>
-			<Button id="apprbtn" text="Approve" visible="false" type="Accept"/>
+			<!-- <Button id="apprbtn" text="Approve" visible="false" type="Accept"/>
 			<Button id="rejbtn" text="Reject" visible="false" type="Reject"/>
 			<Button id="sbtbtn" text="Submit" press="handleSubmit"/>
-			<Button id="draftbtn" press="handleSubmit" text="Save as Draft"/>
+			<Button id="draftbtn" press="handleSubmit" text="Save as Draft"/> -->
 		</semantic:customFooterContent>
 	</semantic:FullscreenPage>
 </mvc:View>

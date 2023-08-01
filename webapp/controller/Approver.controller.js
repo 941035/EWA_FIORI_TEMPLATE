@@ -261,6 +261,7 @@ sap.ui.define([
                 var btnText = oEvent.getSource().getText();
                 // this.dummyPayload = this.dummyPayload();
                 this.payload = this.preparePayload();
+                this.payload.ProjinfoToApprovers=[];
                 if(btnText === "Save as Draft" && this.payload.ZewaNo === "0000000000"){
                     this.payload.Zstatus = "S"
                 }

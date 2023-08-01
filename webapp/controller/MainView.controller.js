@@ -385,6 +385,7 @@ sap.ui.define([
                 data.ProjinfoToSummaryCost =  costSummary;
                 data.ZplanStartdate = this.setLocalTimeZoneZone(data.ZplanStartdate);
                 data.ZplnEnddate = this.setLocalTimeZoneZone(data.ZplnEnddate);
+                data.ProjinfoToApprovers=[];
                 }
                 
                 return data;
@@ -436,7 +437,7 @@ sap.ui.define([
                 
             },
             assignOperationCode: function(operCodeArr){
-                this.oViewModel.setProperty("/ZoperCode1","");
+                // this.oViewModel.setProperty("/ZoperCode1","");
                 // this.getView().byId("operCode").removeAllTokens();
                 var operationCode="";
                 if(operCodeArr.length > 0){
