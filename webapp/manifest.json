@@ -34,6 +34,10 @@
         "uri" :"model/initialViewData.json",
         "type" : "JSON"
 
+      },
+      "visibilityDataModel":{
+        "uri" :"model/visibilityModel.json",
+        "type" : "JSON"
       }
     }
   },
@@ -93,6 +97,11 @@
         "type" : "sap.ui.model.json.JSONModel",
         "dataSource": "refreshDataModel"
 
+      },
+      "visibilityDataModel":{
+        "type" : "sap.ui.model.json.JSONModel",
+        "dataSource": "visibilityDataModel"
+
       }
     },
     "resources": {
@@ -118,6 +127,13 @@
           "pattern": "TargetMainView",
           "target": [
             "TargetMainView"
+          ]
+        },
+        {
+          "name": "DisplayView",
+          "pattern": "DisplayView/{ewaId}",
+          "target": [
+            "DisplayView"
           ]
         },
         {
@@ -151,6 +167,13 @@
           "viewName": "EwaListView"
         },
         "object": {
+          "viewName": "Approver",
+          "viewId": "Approver",
+          "viewLevel": 1,
+          "transition": "slide",
+          "clearControlAggregation": false
+        },
+        "DisplayView": {
           "viewName": "Approver",
           "viewId": "Approver",
           "viewLevel": 1,

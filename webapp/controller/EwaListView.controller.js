@@ -18,6 +18,8 @@ sap.ui.define([
                 var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
                 oRouter.getRoute("TaskView").attachPatternMatched(this._onObjectMatched, this);
                 this.oViewModel = this.getOwnerComponent().getModel("viewModel");
+                this.oVisibleModel = this.getOwnerComponent().getModel("visibilityDataModel");
+                // this.getOwnerComponent().setModel(this.oVisibleModel, "VisibleModel");
                 this.oDataModel = this.getOwnerComponent().getModel();
 
             },
@@ -37,6 +39,18 @@ sap.ui.define([
                 var selectedItemBindingPath = oEvent.getSource().getBindingContext().getPath();
                 var itemData = this.oDataModel.getProperty(selectedItemBindingPath);
                 this.ewaNo = itemData.ZewaNo;
+                if(itemData.Zstatus === "P" || itemData.Zstatus === "R"){
+                    this.getOwnerComponent().getRouter().navTo("DisplayView",{ewaId : this.ewaNo});
+                }
+                else{
+                    if(itemData.Zstatus ==="A"){
+                        this.oVisibleModel.setProperty("/setEnabled",false);
+                        this.oVisibleModel.setProperty("/setRevEnabled",true)
+                    }
+                    else if(itemData.Zstatus === "S"){
+                        this.oVisibleModel.setProperty("/setEnabled",true);
+                        this.oVisibleModel.setProperty("/setRevEnabled",false)
+                    }
                 this.oDataModel.read("/EWA_PROJECT_INFOSet", {
                     urlParameters: {
                         "$filter": "ZewaNo eq '" + itemData.ZewaNo + "'",
@@ -52,6 +66,7 @@ sap.ui.define([
                       that.oViewModel.getData().ProjinfoToRd[0].ZrdQualact = that.setMultipleKey(oData.results[0].ProjinfoToRd[0].ZrdQualact);
                       that.oViewModel.getData().ProjinfoToRd[0].ZrdActivitiesQ3 = that.setMultipleKey(oData.results[0].ProjinfoToRd[0].ZrdActivitiesQ3);
                       that.oViewModel.getData().ProjinfoToRd[0].ZrdActPerfQ4 = that.setMultipleKey(oData.results[0].ProjinfoToRd[0].ZrdActPerfQ4);
+                      that.getRevDetails();
                       that.getApprovers();
                     //   that.getOwnerComponent().getRouter().navTo("RouteMainView");
                     },
@@ -61,6 +76,7 @@ sap.ui.define([
 
                     }
                 });
+            }
             },
           
             onClickCusValueHelp: function(){
@@ -179,6 +195,29 @@ sap.ui.define([
                     return originalDate;
                 }
                 return null;
+            },
+            getRevDetails: function(oEvent){
+                var that = this;
+                this.oDataModel.read("/EWA_F4_REVAMENDMENTSet", {
+                    urlParameters: {
+                        "$filter": "ZEWA_NO eq '" + this.ewaNo.replace(/^0+/, '') + "'"
+                      
+                    },
+                    
+                    success: function (oData) {
+                        // that.oViewModel.getData().ProjinfoToApprovers = oData.results;
+                         var dataModel = new JSONModel();
+                        dataModel.setData({
+                          RevisionSet: oData.results
+                        });
+                        that.getOwnerComponent().setModel(dataModel, "RevModel")
+                    },
+                    error: function (oError) {
+                        sap.m.MessageBox.error("Error while fetching Approvers");
+                        console.log(oError);
+
+                    }
+                });
             },
             getApprovers: function(oEvent){
                 var that = this;

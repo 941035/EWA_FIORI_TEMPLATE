@@ -2,9 +2,9 @@
 	xmlns:f="sap.ui.layout.form" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:semantic="sap.m.semantic" xmlns:l="sap.ui.layout"
 	xmlns:u="sap.ui.unified" xmlns:ui="sap.ca.ui">
 	<semantic:FullscreenPage title="{i18n>appTitle}" showNavButton="false" navButtonPress="onNavButtonPress">
-		<IconTabBar id="idIconTabBarNoIcons" expanded="{device>/isNoPhone}" class="sapUiResponsiveContentPadding">
+		<IconTabBar id="idIconTabBarNoIcons" expanded="{device>/isNoPhone}" select="onSelectIconTab" class="sapUiResponsiveContentPadding">
 			<items>
-				<IconTabFilter text="{i18n>projectInfo}" key="projectInformation">
+				<IconTabFilter text="{i18n>projectInfo}" key="projectInformation" >
 					<MessageStrip text="{i18n>msgStripText}"/>
 					<f:SimpleForm class="formHeader" title="{i18n>genInfo}" editable="true" id="mainForm" layout="ResponsiveGridLayout" labelSpanXL="4"
 						labelSpanL="4" labelSpanM="4" labelSpanS="4" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0"
@@ -13,15 +13,15 @@
 							<core:Title text=""/>
 							<Label text="{i18n>wbsElement}"/>
 							<ComboBox showSecondaryValues="true" filterSecondaryValues="true" selectedKey="{ViewModel>/ZwbsElement}"
-								items="{ path: '/EWA_F4_WBSELEMENTSet' }" change="handleWBSChange">
+								items="{ path: '/EWA_F4_WBSELEMENTSet' }" change="handleWBSChange" editable="{VisibleModel>/setEnabled}">
 								<core:ListItem text="{PSPNR}" key="{PSPNR}" additionalText="{POST1}"/>
 							</ComboBox>
 							<Label text="{i18n>prog}"/>
-							<Input editable="false" value="{ViewModel>/ZprogramCode}"/>
+							<Input editable="false" value="{ViewModel>/ZprogramCode}" />
 							<!-- <ComboBox selectedKey="{ViewModel>/ZprogramCode}" items="{ path: '/EWA_F4_PRGMSet' }" change="handleProgramChange">
 								<core:Item text="{AttrValue}" key="{Param2}"/>
 							</ComboBox> -->
-							<Label text="{i18n>cust}"/>
+							<!-- <Label text="{i18n>cust}"/> -->
 							
 							<!-- <ComboBox showSecondaryValues="true" selectedKey="{ViewModel>/Zcustomer}" filterSecondaryValues="true"
 								items="{ path: '/EWA_F4_CUSTOMERSet' }" change="handleCustomerChange">
@@ -35,23 +35,23 @@
 							</ComboBox> -->
 							<!-- <Input required="true" value="{ViewModel>/ZprismProjid}"/> -->
 							<Label text="{i18n>engPMO}"/>
-							<ComboBox selectedKey="{ViewModel>/ZewaEngpmo}" items="{ path: '/EWA_F4_TYPESet' }" change="handleEngPMOChange">
-								<core:Item text="{ATTR_VALUE}" key="{PARAM2}"/>
+							<ComboBox selectedKey="{ViewModel>/ZewaEngpmo}" items="{ path: '/EWA_F4_TYPESet' }" editable="{VisibleModel>/setEnabled}" change="handleEngPMOChange">
+								<core:Item text="{ATTR_VALUE}" key="{PARAM2}" />
 							</ComboBox>
 							<Label text="{i18n>workDesc}"/>
 							<Input value="{ViewModel>/ZworkDesc}"/>
 							<Label text="{i18n>ewaTyp}"/>
 							<ComboBox required="true" id="ewatype" selectedKey="{ViewModel>/ZewaType}" items="{ path: '/EWA_F4_EWATYPESet' }" change="handleEWAChange"
-								showSecondaryValues="false" filterSecondaryValues="false">
+								showSecondaryValues="false" filterSecondaryValues="false" enabled="{VisibleModel>/setEnabled}">
 								<core:ListItem text="{ATTR_VALUE}" key="{PARAM2}" tooltip="{ATTR_VALUE_INFO}" additionalText="{SAPORDER_VALUE}"/>
 							</ComboBox>
 							<Label text="{i18n>wrkTyp}"/>
-							<Input id="wrktype" value="{ViewModel>/ZworkOrdtype}"/>
+							<Input id="wrktype" value="{ViewModel>/ZworkOrdtype}" editable="{VisibleModel>/setEnabled}"/>
 							<Label text="{i18n>partUnit}"/>
-							<Input showValueHelp="true" valueHelpRequest="showMaterialValueHelp" value="{ViewModel>/ZpartnoUnitdesc}"/>
+							<Input showValueHelp="true" valueHelpRequest="showMaterialValueHelp" editable="{VisibleModel>/setEnabled}" value="{ViewModel>/ZpartnoUnitdesc}"/>
 							<Label text="{i18n>platform}"/>
 							<ComboBox selectedKey="{ViewModel>/Zplatform}" items="{ path: '/EWA_F4_PLATFORMSet' }" change="handleProgramChange"
-								showSecondaryValues="false" filterSecondaryValues="false">
+								showSecondaryValues="false" filterSecondaryValues="false" enabled="{VisibleModel>/setEnabled}">
 								<core:ListItem text="{ZPLATFORM}" key="{ZPLATFORM}"/>
 							</ComboBox>
 							<!-- <Input value="{ViewModel>/Zplatform}" id="platform" /> -->
@@ -69,30 +69,34 @@
                                 <core:Item text="{WorkPackage>MLNO}" key="{WorkPackage>MLNO}" />
                             </ComboBox> -->
 							<Label text="{i18n>intendEWA}"/>
-							<Input value="{ViewModel>/ZintEwano}"/>
+							<Input value="{ViewModel>/ZintEwano}" editable="{VisibleModel>/setEnabled}"/>
 							<core:Title text=""/>
 							<Label text="{i18n>revAmend}"/>
-							<Input editable="true" value="{ViewModel>/ZrevAmend}"/>
+							<ComboBox selectedKey="{ViewModel>/ZrevAmend}" change="onRevisionChange" items="{ path: 'RevModel>/RevisionSet' }" 
+								showSecondaryValues="false" filterSecondaryValues="false" enabled="{VisibleModel>/setRevEnabled}">
+								<core:ListItem text="{RevModel>ZREV_AMEND}" key="{RevModel>ZREV_AMEND}" additionalText="{RevModel>STATUS}"/>
+							</ComboBox>
+							<!-- <Input editable="true" value="{ViewModel>/ZrevAmend}"/> -->
 							<Label text="{i18n>prjMan}"/>
-							<Input placeholder="Enter SAP Pernr Number" value="{ViewModel>/ZprojMgr}"/>
+							<Input placeholder="Enter SAP Pernr Number" editable="{VisibleModel>/setEnabled}" value="{ViewModel>/ZprojMgr}"/>
 							<Label text="{i18n>curPrjMan}"/>
-							<Input placeholder="Enter SAP Pernr Number" value="{ViewModel>/ZcurrProjmgr}"/>
+							<Input placeholder="Enter SAP Pernr Number" editable="{VisibleModel>/setEnabled}" value="{ViewModel>/ZcurrProjmgr}"/>
 							<Label text="{i18n>ppca}"/>
-							<Input value="{ViewModel>/Zppca}"/>
+							<Input editable="{VisibleModel>/setEnabled}" value="{ViewModel>/Zppca}"/>
 							<Label text="{i18n>cam}"/>
-							<Input value="{ViewModel>/Zcam}"/>
+							<Input editable="{VisibleModel>/setEnabled}" value="{ViewModel>/Zcam}"/>
 							<Label text="{i18n>planStrtDate}"/>
-							<DatePicker valueFormat="MM/dd/yyyy" displayFormat="MM/dd/yyyy"
+							<DatePicker valueFormat="MM/dd/yyyy" displayFormat="MM/dd/yyyy" editable="{VisibleModel>/setEnabled}"
 								value="{ path: 'ViewModel>/ZplanStartdate', type: 'sap.ui.model.type.Date', formatOptions: { style: 'short', pattern: 'MM/dd/yyyy' } }"/>
 							<Label text="{i18n>planEndDate}"/>
-							<DatePicker valueFormat="MM/dd/yyyy" displayFormat="MM/dd/yyyy"
+							<DatePicker valueFormat="MM/dd/yyyy" displayFormat="MM/dd/yyyy" editable="{VisibleModel>/setEnabled}"
 								value="{ path: 'ViewModel>/ZplnEnddate', type: 'sap.ui.model.type.Date', formatOptions: { style: 'short', pattern: 'MM/dd/yyyy' } }"/>
 							<!-- <Label text="{i18n>operaCode}"/>
 							<Input editable="false" id="operCode" value="{ViewModel>/ZoperCode1}"/> -->
 							<Label text="{i18n>planWrkPkgHrs}"/>
-							<Input value="{ViewModel>/ZplanWph}" change="getApprovers"/>
+							<Input id="planwph" value="{ViewModel>/ZplanWph}" change="getApprovers"/>
 							<Label text="{i18n>planWrkHrs}"/>
-							<Input value="{ViewModel>/ZmatDollars}" />
+							<Input id="matdollars" value="{ViewModel>/ZmatDollars}" change="getApprovers" />
 							<!-- <Label text="{i18n>matDollars}" />
                             <Input value="{ViewModel>/ZmatDollars}"/>
                             <Label text="{i18n>costCent}" />
@@ -110,9 +114,9 @@
                             </ComboBox> -->
 							<!-- <Input value="{ViewModel>/Zworkcenter}"/> -->
 							<Label text="{i18n>rfaNumber}"/>
-							<Input value="{ViewModel>/ZrfaNo}"/>
+							<Input editable="{VisibleModel>/setEnabled}" value="{ViewModel>/ZrfaNo}"/>
 							<Label text="{i18n>ratSOW}"/>
-							<TextArea rows="17" value="{ViewModel>/ZratioSow}"/>
+							<TextArea rows="17" editable="{VisibleModel>/setEnabled}" value="{ViewModel>/ZratioSow}"/>
 						</f:content>
 					</f:SimpleForm>
 					<Panel expandable="true" headerText="{i18n>supportHrs}" width="auto">
@@ -146,7 +150,7 @@
 										<cells>
 											<Text text="{ViewModel>ZsumSuphrsDesc}"/>
 											<Text text="{ViewModel>ZoperCode}"/>
-											<Input type="Number" value="{ViewModel>Zhours}" change="calculateTotalHrs"/>
+											<Input editable="{VisibleModel>/setEnabled}" type="Number" value="{ViewModel>Zhours}" change="calculateTotalHrs"/>
 											<Text text="{ViewModel>ZsumSuphrs}"/>
 											<Text text="{ViewModel>ZtotHours/}"/>
 										</cells>
@@ -182,7 +186,7 @@
 										<cells>
 											<Text text="{ViewModel>ZsumSupCostDes}"/>
 											<Text/>
-											<Input type="Number" value="{ViewModel>Zcost}" change="calculateCostHrs"/>
+											<Input editable="{VisibleModel>/setEnabled}" type="Number" value="{ViewModel>Zcost}" change="calculateCostHrs"/>
 											<Text text="{ViewModel>ZsumSupCostCode}"/>
 											<Text text="{ViewModel>ZtotalCost/}"/>
 										</cells>
@@ -211,27 +215,27 @@
 						<f:content>
 							<core:Title text=""/>
 							<Label wrapping="true" text="{i18n>rdq0}"/>
-							<MultiComboBox selectedKeys="{ViewModel>/ProjinfoToRd/0/ZrdQualact}" id="rdq0MultiCombo" width="45%" items="{ path: '/EWA_F4_QUAL_ACTSet' }">
+							<MultiComboBox selectedKeys="{ViewModel>/ProjinfoToRd/0/ZrdQualact}" id="rdq0MultiCombo" width="45%" items="{ path: '/EWA_F4_QUAL_ACTSet' }" editable="{VisibleModel>/setEnabled}">
 								<core:Item key="{PARAM2}" text="{ATTR_VALUE}"/>
 							</MultiComboBox>
 							<Label wrapping="true" text="{i18n>rdq1}"/>
-							<ComboBox selectedKey="{ViewModel>/ProjinfoToRd/0/ZrdAagQ1}" width="45%" change="validateSelection">
+							<ComboBox selectedKey="{ViewModel>/ProjinfoToRd/0/ZrdAagQ1}" width="45%" change="validateSelection" editable="{VisibleModel>/setEnabled}">
 								<core:Item key="Yes" text="Yes"/>
 								<core:Item key="No" text="No"/>
 							</ComboBox>
 							<Label wrapping="true" text="{i18n>rdq2}"/>
-							<ComboBox selectedKey="{ViewModel>/ProjinfoToRd/0/ZrdDivisionQ2}" width="45%" change="validateSelection">
+							<ComboBox selectedKey="{ViewModel>/ProjinfoToRd/0/ZrdDivisionQ2}" width="45%" change="validateSelection" editable="{VisibleModel>/setEnabled}">
 								<core:Item key="Yes" text="Yes"/>
 								<core:Item key="No" text="No"/>
 							</ComboBox>
 							<Label wrapping="true" text="{i18n>rdq3}"/>
 							<MultiComboBox selectedKeys="{ViewModel>/ProjinfoToRd/0/ZrdActivitiesQ3}" id="rdq3MultiCombo" width="45%"
-								items="{ path: '/EWA_F4_RD_ACTIVITIESSet' }">
+								items="{ path: '/EWA_F4_RD_ACTIVITIESSet' }" editable="{VisibleModel>/setEnabled}">
 								<core:Item key="{PARAM2}" text="{ATTR_VALUE}"/>
 							</MultiComboBox>
 							<Label wrapping="true" text="{i18n>rdq4}"/>
 							<MultiComboBox selectedKeys="{ViewModel>/ProjinfoToRd/0/ZrdActPerfQ4}" id="rdq4MultiCombo" width="45%"
-								items="{ path: '/EWA_RD_BUSCOMPONENTSet' }">
+								items="{ path: '/EWA_RD_BUSCOMPONENTSet' }" editable="{VisibleModel>/setEnabled}">
 								<core:Item key="{PARAM2}" text="{ATTR_VALUE}"/>
 							</MultiComboBox>
 							<core:Title text=""/>
@@ -243,17 +247,17 @@
 						<f:content>
 							<core:Title text=""/>
 							<Label wrapping="true" text="{i18n>rd1_1}"/>
-							<ComboBox selectedKey="{ViewModel>/ProjinfoToRd/0/ZrdSpecContract}" change="validateSelection" width="45%">
+							<ComboBox selectedKey="{ViewModel>/ProjinfoToRd/0/ZrdSpecContract}" change="validateSelection" width="45%" editable="{VisibleModel>/setEnabled}">
 								<core:Item key="Yes" text="Yes"/>
 								<core:Item key="No" text="No"/>
 							</ComboBox>
 							<Label wrapping="true" text="{i18n>rd1_2}"/>
-							<ComboBox selectedKey="{ViewModel>/ProjinfoToRd/0/ZrdServEffort}" change="validateSelection" width="45%">
+							<ComboBox selectedKey="{ViewModel>/ProjinfoToRd/0/ZrdServEffort}" change="validateSelection" width="45%" editable="{VisibleModel>/setEnabled}">
 								<core:Item key="Yes" text="Yes"/>
 								<core:Item key="No" text="No"/>
 							</ComboBox>
 							<Label wrapping="true" text="{i18n>rd1_3}"/>
-							<ComboBox selectedKey="{ViewModel>/ProjinfoToRd/0/ZrdTypeCert}" width="45%" change="validateSelection">
+							<ComboBox selectedKey="{ViewModel>/ProjinfoToRd/0/ZrdTypeCert}" width="45%" change="validateSelection" editable="{VisibleModel>/setEnabled}">
 								<core:Item key="Yes" text="Yes"/>
 								<core:Item key="No" text="No"/>
 							</ComboBox>
@@ -266,7 +270,7 @@
 						<f:content>
 							<core:Title text=""/>
 							<Label wrapping="true" text="{i18n>pir}"/>
-							<ComboBox selectedKey="{ViewModel>/ProjinfoToRd/0/ZrdPir}" width="45%" change="validateSelection">
+							<ComboBox selectedKey="{ViewModel>/ProjinfoToRd/0/ZrdPir}" width="45%" change="validateSelection" editable="{VisibleModel>/setEnabled}">
 								<core:Item key="Yes" text="Yes"/>
 								<core:Item key="No" text="No"/>
 							</ComboBox>
@@ -275,7 +279,7 @@
 						</f:content>
 					</f:SimpleForm>
 				</IconTabFilter>
-				<IconTabFilter text="{i18n>attach}" key="attachment">
+				<IconTabFilter visible="false" text="{i18n>attach}" key="attachment">
 					<l:VerticalLayout>
 						<u:FileUploader id="fileUploader" name="myFileUpload" uploadUrl="upload/" tooltip="Upload your file to the local server"
 							uploadComplete="handleUploadComplete"/>
@@ -307,8 +311,8 @@
 									<Text text="{ViewModel>ZapprId}"/>
 									<Text text="{ViewModel>ZapprName}"/>
 									<Text text="{ViewModel>ZewaApprRole}"/>
-									<Text text="{ViewModel>Zstatus}"/>
-									<Text text="{ path: 'ViewModel>/ZapprDate', type: 'sap.ui.model.type.Date', formatOptions: { style: 'short', pattern: 'MM/dd/yyyy' } }"/>
+									<Text text="{ViewModel>ZstatusText}"/>
+									<Text text="{ path: 'ViewModel>ZapprDate', type: 'sap.ui.model.type.Date', formatOptions: { style: 'short', pattern: 'MM/dd/yyyy' } }"/>
 								</cells>
 							</ColumnListItem>
 						</items>

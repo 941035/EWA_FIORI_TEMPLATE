@@ -45,7 +45,7 @@
 					<core:ListItem text="{StatusText}" key="{Status}" />
 				</ComboBox>
 				<Label class="sapUiSmallMarginTop" text=""/>
-				<Button class="sapUiTinyMarginTop" press="onSearch" text="Go"/>
+				<Button class="sapUiTinyMarginTop" icon="sap-icon://search" press="onSearch" text="Go"/>
 				<core:Title text=""/>
 			</f:content>
 		</f:SimpleForm>

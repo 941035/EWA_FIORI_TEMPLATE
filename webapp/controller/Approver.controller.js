@@ -18,6 +18,7 @@ sap.ui.define([
                 debugger;
                 var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
                 oRouter.getRoute("wfobject").attachPatternMatched(this._onWFObjectMatched, this);
+                oRouter.getRoute("DisplayView").attachPatternMatched(this._onAttachPatternMatched, this);
                 this.keyArray=[];
                 this.keyArray1=[];
                 this.keyArray2=[];
@@ -25,6 +26,10 @@ sap.ui.define([
                
                 
 
+            },
+            _onAttachPatternMatched: function(oEvent){
+                this.ewaID = oEvent.getParameter("arguments").ewaId;
+                this.getEWADetails(this.ewaID);
             },
             _onWFObjectMatched: function (oEvent) {
                 // this.getModel("appView").setProperty("/layout", "MidColumnFullScreen");
@@ -72,9 +77,34 @@ sap.ui.define([
                 this.oViewModel.refresh(true);
                 this.getView().byId("ewaTypTxt").setText(this.getView().byId("ewatype").getProperty("value"));
             },
-            getApprovers: function(){
-                var that = this;
-                this.oDataModel.read("/EWA_APPROVERS_TABLESet", {
+            onSelectIconTab: function(oEvent){
+                if(oEvent.getParameter("key") === "approvers"){
+                    this.getApprovers(undefined);
+                }
+            },
+            getApprovers: function(oEvent){
+                 var that = this;
+                var planWPh="";
+                var matdollars = "";
+                if(oEvent != undefined){
+                    if(oEvent.getSource().getId().indexOf("planwph") > 0){
+                        planWPh = oEvent.getParameter("value");
+                        matdollars = this.oViewModel.getData().ZmatDollars;
+                    }
+                    else if(oEvent.getSource().getId().indexOf("matdollars") > 0){
+                        matdollars = oEvent.getParameter("value");
+                        planWPh = this.oViewModel.getData().ZplanWph;
+                    }
+                }
+                else{
+                    planWPh = this.oViewModel.getData().ZplanWph ;
+                    matdollars = this.oViewModel.getData().ZmatDollars;
+                }
+                this.oDataModel.read("/EWA_MAT_DOLLAR_APPROVERSSet", {
+                    urlParameters: {
+                        "$filter": "ZplanWph eq '" + planWPh + "'and ZmatDollarAmt eq '" + matdollars + "'"
+                      
+                    },
                     
                     success: function (oData) {
                         that.oViewModel.getData().ProjinfoToApprovers = oData.results;
@@ -423,6 +453,7 @@ sap.ui.define([
                     
                     }
                     sumHrsTable.getColumns()[2].getAggregation("footer").setValue(parseInt(this.costtotalHrs));
+                    this.oViewModel.setProperty("/ZmatDollars",parseInt(this.costtotalHrs));
             },
             calculateTotalHrs: function(){
                 var sumHrsTable = this.getView().byId("summaryHrs");
@@ -443,6 +474,7 @@ sap.ui.define([
                     
                     }
                     sumHrsTable.getColumns()[2].getAggregation("footer").setValue(parseInt(this.totalHrs));
+                    this.oViewModel.setProperty("/ZplanWph",parseInt(this.totalHrs));
                     this.operationCode = this.removeDuplicates(this.operCode);
                     this.assignOperationCode(this.operationCode);
                     

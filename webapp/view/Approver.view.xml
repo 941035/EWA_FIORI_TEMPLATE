@@ -2,7 +2,7 @@
 	xmlns:f="sap.ui.layout.form" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:semantic="sap.m.semantic" xmlns:l="sap.ui.layout"
 	xmlns:u="sap.ui.unified" xmlns:ui="sap.ca.ui">
 	<semantic:FullscreenPage  showNavButton="false" navButtonPress="onNavButtonPress">
-		<IconTabBar id="idIconTabBarNoIcons" expanded="{device>/isNoPhone}" class="sapUiResponsiveContentPadding">
+		<IconTabBar id="idIconTabBarNoIcons" expanded="{device>/isNoPhone}"  class="sapUiResponsiveContentPadding">
 			<items>
 				<IconTabFilter text="{i18n>projectInfo}" key="projectInformation">
 					<!-- <MessageStrip text="{i18n>msgStripText}"/> -->
@@ -21,8 +21,8 @@
 							<!-- <ComboBox selectedKey="{ViewModel>/ZprogramCode}" editable="false" items="{ path: '/EWA_F4_PRGMSet' }" change="handleProgramChange">
 								<core:Item text="{AttrValue}" key="{Param2}"/>
 							</ComboBox> -->
-							<Label text="{i18n>cust}"/>
-							<Input editable="false" value="{ViewModel>/Zcustomer}"/>
+							<!-- <Label text="{i18n>cust}"/>
+							<Input editable="false" value="{ViewModel>/Zcustomer}"/> -->
 							<!-- <ComboBox showSecondaryValues="true" editable="false" selectedKey="{ViewModel>/Zcustomer}" filterSecondaryValues="true"
 								items="{ path: '/EWA_F4_CUSTOMERSet' }" change="handleCustomerChange">
 								<core:ListItem text="{NAME1}" key="{KUNNR}" additionalText="{VKORG}"/>
@@ -90,7 +90,7 @@
 							<Label text="{i18n>operaCode}"/>
 							<Input editable="false" id="operCode" value="{ViewModel>/ZoperCode1}"/>
 							<Label text="{i18n>planWrkPkgHrs}"/>
-							<Input value="{ViewModel>/ZplanWph}" editable="false"/>
+							<Input value="{ViewModel>/ZplanWph}" change="getApprovers" editable="false"/>
 							<Label text="{i18n>planWrkHrs}" />
 							<Input value="{ViewModel>/ZmatDollars}" editable="false"/>
 							<!-- <Label text="{i18n>matDollars}" />
@@ -275,7 +275,7 @@
 						</f:content>
 					</f:SimpleForm>
 				</IconTabFilter>
-				<IconTabFilter text="{i18n>attach}" key="attachment">
+				<IconTabFilter visible="false" text="{i18n>attach}" key="attachment">
 					<l:VerticalLayout>
 						<u:FileUploader id="fileUploader" name="myFileUpload" uploadUrl="upload/" tooltip="Upload your file to the local server"
 							uploadComplete="handleUploadComplete"/>
@@ -303,8 +303,8 @@
 								<cells>
 									<Text text="{ViewModel>ZapprId}"/>
 									<Text text="{ViewModel>ZapprName}"/>
-									<Text text="{ViewModel>Zstatus}"/>
-									<Text text="{ path: 'ViewModel>/ZapprDate', type: 'sap.ui.model.type.Date', formatOptions: { style: 'short', pattern: 'MM/dd/yyyy' } }"/>
+									<Text text="{ViewModel>ZstatusText}"/>
+									<Text text="{ path: 'ViewModel>ZapprDate', type: 'sap.ui.model.type.Date', formatOptions: { style: 'short', pattern: 'MM/dd/yyyy' } }"/>
 								</cells>
 							</ColumnListItem>
 						</items>

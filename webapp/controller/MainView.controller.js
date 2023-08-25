@@ -14,6 +14,8 @@ sap.ui.define([
             onInit: function () {
                 this.oDataModel = this.getOwnerComponent().getModel();
                 this.oViewModel = this.getOwnerComponent().getModel("viewModel");
+                this.oVisibleModel = this.getOwnerComponent().getModel("visibilityDataModel");
+                this.getOwnerComponent().setModel(this.oVisibleModel, "VisibleModel");
                 this.getOwnerComponent().setModel(this.oViewModel, "ViewModel");
                 var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
                 oRouter.getRoute("RouteMainView").attachPatternMatched(this._onObjectMatched, this);
@@ -21,6 +23,7 @@ sap.ui.define([
                 this.keyArray1=[];
                 this.keyArray2=[];
                 this.totalHrs= 0;
+                this.costtotalHrs= 0;
                
                 
 
@@ -46,21 +49,44 @@ sap.ui.define([
                     
                     if(this.oViewModel.getData().ProjinfoToSummary.length > 0){
                         sumHrsTable.getColumns()[2].getAggregation("footer").setValue(parseInt(this.oViewModel.getData().ProjinfoToSummary[0].ZtotHours));
+                        this.oViewModel.setProperty("/ZplanWph",parseInt(this.oViewModel.getData().ProjinfoToSummary[0].ZtotHours).toString());
                     }
                     if(this.oViewModel.getData().ProjinfoToSummaryCost.length > 0){
                         costHrsTable.getColumns()[2].getAggregation("footer").setValue(parseInt(this.oViewModel.getData().ProjinfoToSummaryCost[0].ZtotalCost));
+                        this.oViewModel.setProperty("/ZmatDollars",parseInt(this.oViewModel.getData().ProjinfoToSummaryCost[0].ZtotalCost).toString());
                     }
                     
                 }
                 this.oViewModel.refresh(true);
                 this.getView().byId("ewaTypTxt").setText(this.getView().byId("ewatype").getProperty("value"));
             },
+            onSelectIconTab: function(oEvent){
+                if(oEvent.getParameter("key") === "approvers"){
+                    this.getApprovers(undefined);
+                }
+            },
             getApprovers: function(oEvent){
                 var that = this;
-                var planWPh = oEvent.getParameter("value");
+                var planWPh="";
+                var matdollars = "";
+                if(oEvent != undefined){
+                    if(oEvent.getSource().getId().indexOf("planwph") > 0){
+                        planWPh = oEvent.getParameter("value");
+                        matdollars = this.oViewModel.getData().ZmatDollars;
+                    }
+                    else if(oEvent.getSource().getId().indexOf("matdollars") > 0){
+                        matdollars = oEvent.getParameter("value");
+                        planWPh = this.oViewModel.getData().ZplanWph;
+                    }
+                 
+                }
+                else{
+                    planWPh = this.oViewModel.getData().ZplanWph ;
+                    matdollars = this.oViewModel.getData().ZmatDollars;
+                }
                 this.oDataModel.read("/EWA_MAT_DOLLAR_APPROVERSSet", {
                     urlParameters: {
-                        "$filter": "ZplanWph eq '" + planWPh + "'"
+                        "$filter": "ZplanWph eq '" + planWPh + "'and ZmatDollarAmt eq '" + matdollars + "'"
                       
                     },
                     
@@ -255,6 +281,9 @@ sap.ui.define([
                 else if(btnText === "Submit"){
                     this.payload.Zstatus="P";
                 }
+                this.payload.ProjinfoToApprovers=[];
+                this.payload.ZplanWph = this.payload.ZplanWph.toString();
+                this.payload.ZmatDollars = this.payload.ZmatDollars.toString();
                 if(!bFlag){
                 this.oDataModel.create("/EWA_PROJECT_INFOSet", this.payload, {
 
@@ -277,6 +306,7 @@ sap.ui.define([
                         
                     },
                     error: function (oError) {
+                        MessageBox.error(JSON.parse(oError.responseText).error.message.value);
                         console.log(oError);
                         that.getView().byId("rdq0MultiCombo").getSelectedKeys(that.keyArray);
                         that.keyArray1= this.getView().byId("rdq3MultiCombo").getSelectedKeys(that.keyArray1);
@@ -411,6 +441,7 @@ sap.ui.define([
                     
                     }
                     sumHrsTable.getColumns()[2].getAggregation("footer").setValue(parseInt(this.costtotalHrs));
+                    this.oViewModel.setProperty("/ZmatDollars",parseInt(this.costtotalHrs).toString());
             },
             calculateTotalHrs: function(){
                 var sumHrsTable = this.getView().byId("summaryHrs");
@@ -431,6 +462,7 @@ sap.ui.define([
                     
                     }
                     sumHrsTable.getColumns()[2].getAggregation("footer").setValue(parseInt(this.totalHrs));
+                    this.oViewModel.setProperty("/ZplanWph",parseInt(this.totalHrs.toString()));
                     this.operationCode = this.removeDuplicates(this.operCode);
                     this.assignOperationCode(this.operationCode);
                     
@@ -467,7 +499,8 @@ sap.ui.define([
             },
             prepareCostSummaryHrs: function(){
                 var projectHrs =[];
-                this.calculateCostHrs();
+                
+                // this.calculateCostHrs();
                 var sumHrsItem = this.getView().byId("costHrs").getItems();
                 for(var count =0; count < sumHrsItem.length; count++ ){
                 var sPath = this.getView().byId("costHrs").getItems()[count].getBindingContextPath();
@@ -487,7 +520,7 @@ sap.ui.define([
             },
             prepareSummaryHours: function(){
                 var projectHrs =[];
-                this.calculateTotalHrs();
+                // this.calculateTotalHrs();
                 var sumHrsItem = this.getView().byId("summaryHrs").getItems();
                 for(var count =0; count < sumHrsItem.length; count++ ){
                 var sPath = this.getView().byId("summaryHrs").getItems()[count].getBindingContextPath();
@@ -703,6 +736,25 @@ sap.ui.define([
                 if (this._matHelpDialog) {
                     this._matHelpDialog.destroy(true);
                     this._matHelpDialog = null;
+                }
+            },
+            onRevisionChange: function(oEvent){
+                var selKey = oEvent.getParameter("newValue");
+                var dataArray = this.getOwnerComponent().getModel("RevModel").getData().RevisionSet;
+                if(oEvent.getSource().getSelectedItem().getAdditionalText() ==="INVALID"){
+                    oEvent.getSource().setValueState("Error");
+                    oEvent.getSource().setValueStateText("Invalid Selection");
+                    sap.m.MessageBox.error("Invalid Selection");
+                }
+                else{
+                    oEvent.getSource().setValueState("None");
+                    oEvent.getSource().setValueStateText("");
+                    var object = dataArray.find(obj => obj.ZREV_AMEND === selKey);
+                    console.log(object);
+                    this.oViewModel.setProperty("/ZworkDesc",object.ZWORK_DESC);
+                    // this.oViewModel.setProperty("/ZoperCode1",object.ZREV_AMEND);
+                    this.oViewModel.setProperty("/ZplanWph",object.ZPLAN_WPH);
+                    this.oViewModel.setProperty("/ZmatDollars",object.ZMAT_DOLLARS);
                 }
             },
             setLocalTimeZoneZone : function (datevalue) {
