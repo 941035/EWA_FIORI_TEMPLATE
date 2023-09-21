@@ -32,6 +32,8 @@ sap.ui.define([
             handlCreateNew:function(){
                 this.oViewModel.getData().ProjinfoToSummary = [];
                 this.oViewModel.getData().ProjinfoToApprovers = [];
+                this.oVisibleModel.setProperty("/setEnabled",true);
+                this.oVisibleModel.setProperty("/setRevEnabled",false)
                 this.getOwnerComponent().getRouter().navTo("RouteMainView");
             },
             handleLineItemPress: function(oEvent){

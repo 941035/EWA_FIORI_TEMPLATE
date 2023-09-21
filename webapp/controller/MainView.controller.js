@@ -7,7 +7,7 @@ sap.ui.define([
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller,coreLibrary,JSONModel,MessageBox) {
+    function (Controller, coreLibrary, JSONModel, MessageBox) {
         "use strict";
         var ValueState = coreLibrary.ValueState;
         return Controller.extend("com.parker.ewaformtemp.controller.MainView", {
@@ -19,77 +19,80 @@ sap.ui.define([
                 this.getOwnerComponent().setModel(this.oViewModel, "ViewModel");
                 var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
                 oRouter.getRoute("RouteMainView").attachPatternMatched(this._onObjectMatched, this);
-                this.keyArray=[];
-                this.keyArray1=[];
-                this.keyArray2=[];
-                this.totalHrs= 0;
-                this.costtotalHrs= 0;
-               
-                
+                this.keyArray = [];
+                this.keyArray1 = [];
+                this.keyArray2 = [];
+                this.totalHrs = 0;
+                this.costtotalHrs = 0;
+
+
 
             },
-            _onObjectMatched: function(oEvent){
-                this.totalHrs= 0;
+            _onObjectMatched: function (oEvent) {
+                this.totalHrs = 0;
                 this.oViewModel = this.getOwnerComponent().getModel("viewModel");
-                var sumHrsTable= this.getView().byId("summaryHrs");
+                var sumHrsTable = this.getView().byId("summaryHrs");
                 var costHrsTable = this.getView().byId("costHrs");
+                this.oVisibleModel = this.getOwnerComponent().getModel("visibilityDataModel");
+                this.getOwnerComponent().setModel(this.oVisibleModel, "VisibleModel");
                 this.getOwnerComponent().setModel(this.oViewModel, "ViewModel");
-                if(this.oViewModel.getData().ProjinfoToSummary.length === 0)
-                {
+                if (this.oViewModel.getData().ProjinfoToSummary.length === 0) {
                     this.oViewModel.setData(this.refreshPayload());
                     // this.getApprovers();
                     this.getSummaryHrs();
                     this.getCostHours();
-                    this.oViewModel.setProperty("/ZoperCode1","");
+                    this.oViewModel.setProperty("/ZoperCode1", "");
                     sumHrsTable.getColumns()[2].getAggregation("footer").setValue("");
                     costHrsTable.getColumns()[2].getAggregation("footer").setValue("");
                 }
-                else{
-                    
-                    
-                    if(this.oViewModel.getData().ProjinfoToSummary.length > 0){
+                else {
+
+
+                    if (this.oViewModel.getData().ProjinfoToSummary.length > 0) {
                         sumHrsTable.getColumns()[2].getAggregation("footer").setValue(parseInt(this.oViewModel.getData().ProjinfoToSummary[0].ZtotHours));
-                        this.oViewModel.setProperty("/ZplanWph",parseInt(this.oViewModel.getData().ProjinfoToSummary[0].ZtotHours).toString());
+                        this.oViewModel.setProperty("/ZplanWph", parseInt(this.oViewModel.getData().ProjinfoToSummary[0].ZtotHours).toString());
                     }
-                    if(this.oViewModel.getData().ProjinfoToSummaryCost.length > 0){
+                    if (this.oViewModel.getData().ProjinfoToSummaryCost.length > 0) {
                         costHrsTable.getColumns()[2].getAggregation("footer").setValue(parseInt(this.oViewModel.getData().ProjinfoToSummaryCost[0].ZtotalCost));
-                        this.oViewModel.setProperty("/ZmatDollars",parseInt(this.oViewModel.getData().ProjinfoToSummaryCost[0].ZtotalCost).toString());
+                        this.oViewModel.setProperty("/ZmatDollars", parseInt(this.oViewModel.getData().ProjinfoToSummaryCost[0].ZtotalCost).toString());
                     }
-                    
+
                 }
                 this.oViewModel.refresh(true);
                 this.getView().byId("ewaTypTxt").setText(this.getView().byId("ewatype").getProperty("value"));
+                this.getView().byId("summaryHrs").getColumns()[5].setVisible(false);
+                this.getView().byId("costHrs").getColumns()[5].setVisible(false);
             },
-            onSelectIconTab: function(oEvent){
-                if(oEvent.getParameter("key") === "approvers"){
+            onSelectIconTab: function (oEvent) {
+                if (oEvent.getParameter("key") === "approvers") {
                     this.getApprovers(undefined);
                 }
             },
-            getApprovers: function(oEvent){
+            getApprovers: function (oEvent) {
                 var that = this;
-                var planWPh="";
+                var planWPh = "";
                 var matdollars = "";
-                if(oEvent != undefined){
-                    if(oEvent.getSource().getId().indexOf("planwph") > 0){
+                if (oEvent != undefined) {
+                    if (oEvent.getSource().getId().indexOf("planwph") > 0) {
                         planWPh = oEvent.getParameter("value");
                         matdollars = this.oViewModel.getData().ZmatDollars;
                     }
-                    else if(oEvent.getSource().getId().indexOf("matdollars") > 0){
+                    else if (oEvent.getSource().getId().indexOf("matdollars") > 0) {
                         matdollars = oEvent.getParameter("value");
                         planWPh = this.oViewModel.getData().ZplanWph;
                     }
-                 
+
                 }
-                else{
-                    planWPh = this.oViewModel.getData().ZplanWph ;
+                else {
+                    planWPh = this.oViewModel.getData().ZplanWph;
                     matdollars = this.oViewModel.getData().ZmatDollars;
                 }
                 this.oDataModel.read("/EWA_MAT_DOLLAR_APPROVERSSet", {
                     urlParameters: {
                         "$filter": "ZplanWph eq '" + planWPh + "'and ZmatDollarAmt eq '" + matdollars + "'"
-                      
+
                     },
-                    
+
                     success: function (oData) {
                         that.oViewModel.getData().ProjinfoToApprovers = oData.results;
                         that.oViewModel.refresh(true)
@@ -101,10 +104,10 @@ sap.ui.define([
                     }
                 });
             },
-            getSummaryHrs: function(){
+            getSummaryHrs: function () {
                 var that = this;
                 this.oDataModel.read("/EWA_F4_ITEM_SUMMARYNEWSet", {
-                    
+
                     success: function (oData) {
                         that.oViewModel.getData().ProjinfoToSummary = oData.results;
                         that.oViewModel.refresh(true)
@@ -116,10 +119,10 @@ sap.ui.define([
                     }
                 });
             },
-            getCostHours: function(){
+            getCostHours: function () {
                 var that = this;
                 this.oDataModel.read("/EWA_F4_SUM_SUP_COSTSSet", {
-                    
+
                     success: function (oData) {
                         that.oViewModel.getData().ProjinfoToSummaryCost = oData.results;
                         that.oViewModel.refresh(true)
@@ -149,12 +152,12 @@ sap.ui.define([
                     // this.oViewModel.setProperty("/ProjinfoToRd/0/ZrdQualact",qualifiedValue);
                     // this.oViewModel.setProperty("/ZewaType",sSelectedKey);
 
-                    if(qualifiedValue === "Qualified"){
+                    if (qualifiedValue === "Qualified") {
                         this.getView().byId("rdsection1").setVisible(true);
                         this.getView().byId("rdsection2").setVisible(true);
                         this.getView().byId("rdsection3").setVisible(true);
                     }
-                    else{
+                    else {
                         this.getView().byId("rdsection1").setVisible(false);
                         this.getView().byId("rdsection2").setVisible(false);
                         this.getView().byId("rdsection3").setVisible(false);
@@ -162,18 +165,18 @@ sap.ui.define([
                     // this.checkQualified(sValue);
                 }
             },
-            checkQualified: function(value){
+            checkQualified: function (value) {
                 var ewaType = value.split(":")[0];
-                if( (ewaType === "ES") || (ewaType === "BP") || (ewaType === "MS") ||
-                (ewaType === "CE") || (ewaType === "PES") || (ewaType === "PBP") ||
-                (ewaType === "PMS") || (ewaType === "PCE") ){
+                if ((ewaType === "ES") || (ewaType === "BP") || (ewaType === "MS") ||
+                    (ewaType === "CE") || (ewaType === "PES") || (ewaType === "PBP") ||
+                    (ewaType === "PMS") || (ewaType === "PCE")) {
                     this.getView().byId("qualified").setText("Not Qualified");
                 }
-                else{
+                else {
                     this.getView().byId("qualified").setText("Qualified");
                 }
             },
-            handleCustomerChange: function(oEvent){
+            handleCustomerChange: function (oEvent) {
                 var oValidatedComboBox = oEvent.getSource(),
                     sSelectedKey = oValidatedComboBox.getSelectedKey(),
                     sValue = oValidatedComboBox.getValue();
@@ -181,467 +184,539 @@ sap.ui.define([
                 if (!sSelectedKey && sValue) {
                     oValidatedComboBox.setValueState(ValueState.Error);
                     oValidatedComboBox.setValueStateText("Please enter a valid Customer or select from dropdown");
-                    
+
                 } else {
                     oValidatedComboBox.setValueState(ValueState.None);
                     // this.oViewModel.setProperty("/Zcustomer",sSelectedKey)
-                   
+
                 }
             },
-            handleProgramChange: function(oEvent){
-                var oValidatedComboBox = oEvent.getSource(),
-                sSelectedKey = oValidatedComboBox.getSelectedKey(),
-                sValue = oValidatedComboBox.getValue();
-
-            if (!sSelectedKey && sValue) {
-                oValidatedComboBox.setValueState(ValueState.Error);
-                oValidatedComboBox.setValueStateText("Please enter a valid Program or select from dropdown");
-                // this.getView().byId("platform").setValue("");
-                
-            } else {
-                oValidatedComboBox.setValueState(ValueState.None);
-                // this.getView().byId("platform").setValue(sValue);
-                // this.oViewModel.setProperty("/ZprogramCode",sValue);
-            }
-            },
-            handleWrkPackage: function(oEvent){
-                var oValidatedComboBox = oEvent.getSource(),
-                sSelectedKey = oValidatedComboBox.getSelectedKey(),
-                sValue = oValidatedComboBox.getValue();
-
-            if (!sSelectedKey && sValue) {
-                oValidatedComboBox.setValueState(ValueState.Error);
-                oValidatedComboBox.setValueStateText("Please enter a valid Work Package Fund or select from dropdown");
-                this.getView().byId("platform").setValue("");
-                
-            } else {
-                oValidatedComboBox.setValueState(ValueState.None);
-                // this.oViewModel.setProperty("/ZworkPackfund",sSelectedKey);
-            }
-            },
-            handleEngPMOChange: function(oEvent){
-                var oValidatedComboBox = oEvent.getSource(),
-                sSelectedKey = oValidatedComboBox.getSelectedKey(),
-                sValue = oValidatedComboBox.getValue();
-
-            if (!sSelectedKey && sValue) {
-                oValidatedComboBox.setValueState(ValueState.Error);
-                oValidatedComboBox.setValueStateText("Please enter a valid Enhgineering/PMO  or select from dropdown");
-               
-                
-            } else {
-                oValidatedComboBox.setValueState(ValueState.None);
-                // this.oViewModel.setProperty("/ZewaEngpmo",sSelectedKey);
-                
-            }
-            },
-            handleWBSChange: function(oEvent){
-                var oValidatedComboBox = oEvent.getSource(),
-                sSelectedKey = oValidatedComboBox.getSelectedKey(),
-                sValue = oValidatedComboBox.getValue();
-
-            if (!sSelectedKey && sValue) {
-                oValidatedComboBox.setValueState(ValueState.Error);
-                oValidatedComboBox.setValueStateText("Please enter a valid WBS or select from dropdown");
-                // this.getView().byId("revAmend").setValue("");
-            } else {
-                oValidatedComboBox.setValueState(ValueState.None);
-                // this.getView().byId("revAmend").setValue(sSelectedKey);
-                // this.getView().byId("revAmend").setValue("");
-                // this.oViewModel.setProperty("/ZwbsElement",sSelectedKey);
-                this.fetchWorkPkgFunding(sSelectedKey);
-                
-            } 
-            },
-            handleCostCentreChange: function(oEvent){
+            handleProgramChange: function (oEvent) {
                 var oValidatedComboBox = oEvent.getSource(),
                     sSelectedKey = oValidatedComboBox.getSelectedKey(),
-                   sValue = oValidatedComboBox.getValue();
+                    sValue = oValidatedComboBox.getValue();
+
+                if (!sSelectedKey && sValue) {
+                    oValidatedComboBox.setValueState(ValueState.Error);
+                    oValidatedComboBox.setValueStateText("Please enter a valid Program or select from dropdown");
+                    // this.getView().byId("platform").setValue("");
+
+                } else {
+                    oValidatedComboBox.setValueState(ValueState.None);
+                    // this.getView().byId("platform").setValue(sValue);
+                    // this.oViewModel.setProperty("/ZprogramCode",sValue);
+                }
+            },
+            handleWrkPackage: function (oEvent) {
+                var oValidatedComboBox = oEvent.getSource(),
+                    sSelectedKey = oValidatedComboBox.getSelectedKey(),
+                    sValue = oValidatedComboBox.getValue();
+
+                if (!sSelectedKey && sValue) {
+                    oValidatedComboBox.setValueState(ValueState.Error);
+                    oValidatedComboBox.setValueStateText("Please enter a valid Work Package Fund or select from dropdown");
+                    this.getView().byId("platform").setValue("");
+
+                } else {
+                    oValidatedComboBox.setValueState(ValueState.None);
+                    // this.oViewModel.setProperty("/ZworkPackfund",sSelectedKey);
+                }
+            },
+            handleEngPMOChange: function (oEvent) {
+                var oValidatedComboBox = oEvent.getSource(),
+                    sSelectedKey = oValidatedComboBox.getSelectedKey(),
+                    sValue = oValidatedComboBox.getValue();
+
+                if (!sSelectedKey && sValue) {
+                    oValidatedComboBox.setValueState(ValueState.Error);
+                    oValidatedComboBox.setValueStateText("Please enter a valid Enhgineering/PMO  or select from dropdown");
+
+
+                } else {
+                    oValidatedComboBox.setValueState(ValueState.None);
+                    // this.oViewModel.setProperty("/ZewaEngpmo",sSelectedKey);
+
+                }
+            },
+            handleWBSChange: function (oEvent) {
+                var oValidatedComboBox = oEvent.getSource(),
+                    sSelectedKey = oValidatedComboBox.getSelectedKey(),
+                    sValue = oValidatedComboBox.getValue();
+
+                if (!sSelectedKey && sValue) {
+                    oValidatedComboBox.setValueState(ValueState.Error);
+                    oValidatedComboBox.setValueStateText("Please enter a valid WBS or select from dropdown");
+                    // this.getView().byId("revAmend").setValue("");
+                } else {
+                    oValidatedComboBox.setValueState(ValueState.None);
+                    // this.getView().byId("revAmend").setValue(sSelectedKey);
+                    // this.getView().byId("revAmend").setValue("");
+                    // this.oViewModel.setProperty("/ZwbsElement",sSelectedKey);
+                    this.fetchWorkPkgFunding(sSelectedKey);
+
+                }
+            },
+            handleCostCentreChange: function (oEvent) {
+                var oValidatedComboBox = oEvent.getSource(),
+                    sSelectedKey = oValidatedComboBox.getSelectedKey(),
+                    sValue = oValidatedComboBox.getValue();
 
                 if (!sSelectedKey && sValue) {
                     oValidatedComboBox.setValueState(ValueState.Error);
                     oValidatedComboBox.setValueStateText("Please enter a valid Cost Centre or select from dropdown");
-                    
+
                 } else {
                     oValidatedComboBox.setValueState(ValueState.None);
-                    
+
                     // this.oViewModel.setProperty("/Zcostcenter",sSelectedKey);
                     // this.checkQualified(sValue);
                 }
             },
-            handleSubmit: function(oEvent){
+            handleSubmit: function (oEvent) {
                 var that = this;
                 var bFlag = this._onSubmitCheck();
                 var btnText = oEvent.getSource().getText();
                 // this.dummyPayload = this.dummyPayload();
                 this.payload = this.preparePayload();
-                if(btnText === "Save as Draft" && this.payload.ZewaNo === "0000000000"){
+                if (btnText === "Save as Draft" && this.payload.ZewaNo === "0000000000") {
                     this.payload.Zstatus = "S"
                 }
-                else if(btnText === "Submit"){
-                    this.payload.Zstatus="P";
+                else if (btnText === "Submit") {
+                    this.payload.Zstatus = "P";
                 }
-                this.payload.ProjinfoToApprovers=[];
+                this.payload.ProjinfoToApprovers = [];
                 this.payload.ZplanWph = this.payload.ZplanWph.toString();
                 this.payload.ZmatDollars = this.payload.ZmatDollars.toString();
-                if(!bFlag){
-                this.oDataModel.create("/EWA_PROJECT_INFOSet", this.payload, {
+                if (!bFlag) {
+                    this.oDataModel.create("/EWA_PROJECT_INFOSet", this.payload, {
 
-                    success: function (oData,response) {
-                        MessageBox.success(JSON.parse(response.headers["sap-message"]).message, {
-                            action: [MessageBox.Action.OK],
-                            onClose: function (sAction) {
-                                
-                                that.oViewModel.setData(that.refreshPayload());
-                               
-                               // that.getOwnerComponent().getModel(that.refreshDataModel, "ViewModel");
-                                that.getOwnerComponent().getRouter().navTo("TaskView");
-                            }
+                        success: function (oData, response) {
+                            MessageBox.success(JSON.parse(response.headers["sap-message"]).message, {
+                                action: [MessageBox.Action.OK],
+                                onClose: function (sAction) {
 
-                        });
+                                    that.oViewModel.setData(that.refreshPayload());
 
+                                    // that.getOwnerComponent().getModel(that.refreshDataModel, "ViewModel");
+                                    that.getOwnerComponent().getRouter().navTo("TaskView");
+                                }
 
-                        // MessageBox.success("EWA Request submitted successfully with ref # " + oData.ZewaNo);
-                       
-                        
-                    },
-                    error: function (oError) {
-                        MessageBox.error(JSON.parse(oError.responseText).error.message.value);
-                        console.log(oError);
-                        that.getView().byId("rdq0MultiCombo").getSelectedKeys(that.keyArray);
-                        that.keyArray1= this.getView().byId("rdq3MultiCombo").getSelectedKeys(that.keyArray1);
-                        that.keyArray2= this.getView().byId("rdq4MultiCombo").getSelectedKeys(that.keyArray2);
+                            });
 
 
-                    }
-                });
-            }
+                            // MessageBox.success("EWA Request submitted successfully with ref # " + oData.ZewaNo);
+
+
+                        },
+                        error: function (oError) {
+                            MessageBox.error(JSON.parse(oError.responseText).error.message.value);
+                            console.log(oError);
+                            that.getView().byId("rdq0MultiCombo").getSelectedKeys(that.keyArray);
+                            that.keyArray1 = this.getView().byId("rdq3MultiCombo").getSelectedKeys(that.keyArray1);
+                            that.keyArray2 = this.getView().byId("rdq4MultiCombo").getSelectedKeys(that.keyArray2);
+
+
+                        }
+                    });
+                }
             },
-            _onSubmitCheck: function() {
+            _onSubmitCheck: function () {
                 var oForm = this.getView().byId("mainForm").getContent();
-        
+
                 var sError = false;
-        
-                oForm.forEach(function(Field) {
+
+                oForm.forEach(function (Field) {
                     if (typeof Field.getValue === "function") {
-        
-                       if(Field.getRequired())
-                       {
+
+                        if (Field.getRequired()) {
                             if (!Field.getValue() || Field.getValue().length < 1) {
-                            Field.setValueState("Error");
-                            Field.setValueStateText("Kindly fill the required Value");
-                            sError = true;
-        
+                                Field.setValueState("Error");
+                                Field.setValueStateText("Kindly fill the required Value");
+                                sError = true;
+
+                            }
+                            else {
+                                Field.setValueStateText("");
+                                Field.setValueState("None");
+                            }
                         }
-                        else {
-                            Field.setValueStateText("");
-                            Field.setValueState("None");
-                        }
+
                     }
-        
-                    }
-        
+
                 });
                 return sError;
-        
+
             },
-            refreshPayload: function(){
+            refreshPayload: function () {
                 var a = {
                     "ZewaNo": "",
                     "Zstatus": "",
-                    "ZwbsElement" : "",
-                    "ZprogramCode" : "",
-                    "Zcustomer" : "",
-                    "ZprismProjid" : "",
-                    "ZewaEngpmo" : "",
-                    "ZworkDesc" : "",
-                    "ZewaType" : "",
-                    "ZworkOrdtype" : "",
-                    "ZpartnoUnitdesc" : "",
-                    "Zplatform" : "",
-                    "Zfunded" : "",
-                    "ZworkPackfund" : "",
-                    "ZintEwano" : "",
-                    "ZrevAmend" : "",
-                    "ZprojMgr" : "",
-                    "ZcurrProjmgr" : "",
-                    "Zppca" : "",
-                    "Zcam" : "",
-                    "ZplanStartdate" : "",
-                    "ZplnEnddate" : "",
-                    "ZoperCode1" : "",
-                    "ZplanWph" : "",
-                    "ZplanWorkPack":"",
-                    "ZmatDollars" : "",
-                    "Zcostcenter" : "",
-                    "Zworkcenter" : "",
-                    "ZrfaNo" : "",
-                    "ZratioSow" : "",
-                    "ProjinfoToSummary" : [
-                      
-                     ],
-                    "ProjinfoToSummaryCost" :[],
-                    "ProjinfoToRd" :[
-                      {
-                          "ZewaNo" : "",
-                          "ZrdQual" : "",
-                          "ZrdQualact" : "",
-                          "ZrdAagQ1" : "",
-                          "ZrdDivisionQ2" : "",
-                          "ZrdActivitiesQ3" : "",
-                          "ZrdActPerfQ4" : "",
-                          "ZrdSpecContract" : "",
-                          "ZrdServEffort" : "",
-                          "ZrdTypeCert" : "",
-                          "ZrdPir" : ""
-                     }
+                    "ZwbsElement": "",
+                    "ZprogramCode": "",
+                    "Zcustomer": "",
+                    "ZprismProjid": "",
+                    "ZewaEngpmo": "",
+                    "ZworkDesc": "",
+                    "ZewaType": "",
+                    "ZworkOrdtype": "",
+                    "ZpartnoUnitdesc": "",
+                    "Zplatform": "",
+                    "Zfunded": "",
+                    "ZworkPackfund": "",
+                    "ZintEwano": "",
+                    "ZrevAmend": "",
+                    "ZprojMgr": "",
+                    "ZcurrProjmgr": "",
+                    "Zppca": "",
+                    "Zcam": "",
+                    "ZplanStartdate": "",
+                    "ZplnEnddate": "",
+                    "ZoperCode1": "",
+                    "ZplanWph": "",
+                    "ZplanWorkPack": "",
+                    "ZmatDollars": "",
+                    "Zcostcenter": "",
+                    "Zworkcenter": "",
+                    "ZrfaNo": "",
+                    "ZratioSow": "",
+                    "ProjinfoToSummary": [
+
                     ],
-                    "ProjinfoToApprovers" :[
-                      
+                    "ProjinfoToSummaryCost": [],
+                    "ProjinfoToRd": [
+                        {
+                            "ZewaNo": "",
+                            "ZrdQual": "",
+                            "ZrdQualact": "",
+                            "ZrdAagQ1": "",
+                            "ZrdDivisionQ2": "",
+                            "ZrdActivitiesQ3": "",
+                            "ZrdActPerfQ4": "",
+                            "ZrdSpecContract": "",
+                            "ZrdServEffort": "",
+                            "ZrdTypeCert": "",
+                            "ZrdPir": ""
+                        }
+                    ],
+                    "ProjinfoToApprovers": [
+
                     ]
-                  };
-                  return a;
+                };
+                return a;
             },
-            preparePayload: function(){
+            preparePayload: function () {
                 var hrsSummary = this.prepareSummaryHours();
                 var costSummary = this.prepareCostSummaryHrs();
                 this.setRDInfoData();
                 // this.setOperationCode();
                 var data = this.oViewModel.getData();
-                if((data.ZewaNo === "") || (data.ZewaNo ==="0000000000")) {
-                data.ZewaNo = "0000000000";
-                data.ProjinfoToRd[0].ZewaNo="0000000000";
-                data.ProjinfoToSummary =  hrsSummary;
-                data.ProjinfoToSummaryCost =  costSummary;
-                data.ZplanStartdate = this.setLocalTimeZoneZone(data.ZplanStartdate);
-                data.ZplnEnddate = this.setLocalTimeZoneZone(data.ZplnEnddate);
-                data.ProjinfoToApprovers=[];
+                if ((data.ZewaNo === "") || (data.ZewaNo === "0000000000")) {
+                    data.ZewaNo = "0000000000";
+                    data.ProjinfoToRd[0].ZewaNo = "0000000000";
+                    data.ProjinfoToSummary = hrsSummary;
+                    data.ProjinfoToSummaryCost = costSummary;
+                    data.ZplanStartdate = this.setLocalTimeZoneZone(data.ZplanStartdate);
+                    data.ZplnEnddate = this.setLocalTimeZoneZone(data.ZplnEnddate);
+                    data.ProjinfoToApprovers = [];
                 }
-                
+                if(this.oViewModel.getData().ZrevAmend.includes("REV")){
+                    data.ProjinfoToSummary = hrsSummary;
+                    data.ProjinfoToSummaryCost = costSummary;
+                }
+
                 return data;
-                
-                
+
+
 
             },
-            calculateCostHrs: function(){
+            calculateCostHrs: function () {
                 var sumHrsTable = this.getView().byId("costHrs");
                 var sumHrsItem = this.getView().byId("costHrs").getItems();
-                this.costtotalHrs= 0;
-                
-                for(var count =0; count < sumHrsItem.length; count++ ){
-                var sPath = this.getView().byId("costHrs").getItems()[count].getBindingContextPath();
-                var itemData = this.oViewModel.getProperty(sPath);    
-                if(itemData.Zcost != "" ){
-                    this.costtotalHrs = this.costtotalHrs + parseInt( itemData.Zcost);
-                    
+                this.costtotalHrs = 0;
+
+                for (var count = 0; count < sumHrsItem.length; count++) {
+                    var sPath = this.getView().byId("costHrs").getItems()[count].getBindingContextPath();
+                    var itemData = this.oViewModel.getProperty(sPath);
+                    if (itemData.Zcost != "") {
+                        this.costtotalHrs = this.costtotalHrs + parseInt(itemData.Zcost);
+
                     }
-                    else{
+                    else {
                         this.costtotalHrs = this.costtotalHrs + 0;
                     }
-                    
-                    }
-                    sumHrsTable.getColumns()[2].getAggregation("footer").setValue(parseInt(this.costtotalHrs));
-                    this.oViewModel.setProperty("/ZmatDollars",parseInt(this.costtotalHrs).toString());
+
+                }
+                sumHrsTable.getColumns()[2].getAggregation("footer").setValue(parseInt(this.costtotalHrs));
+                this.oViewModel.setProperty("/ZmatDollars", parseInt(this.costtotalHrs).toString());
             },
-            calculateTotalHrs: function(){
+            onRevCalCostChanges: function(){
+                var sumHrsTable = this.getView().byId("costHrs");
+                var sumHrsItem = this.getView().byId("costHrs").getItems();
+                this.costtotalHrs = 0;
+
+                for (var count = 0; count < sumHrsItem.length; count++) {
+                    var revCalCostHrs = sumHrsItem[count].getCells()[5].getValue();
+                    if (revCalCostHrs != "") {
+                        this.costtotalHrs = this.costtotalHrs + parseInt(revCalCostHrs);
+
+                    }
+                    else {
+                        this.costtotalHrs = this.costtotalHrs + 0;
+                    }
+
+                }
+                sumHrsTable.getColumns()[5].getAggregation("footer").setValue(parseInt(this.costtotalHrs));
+                this.oViewModel.setProperty("/ZmatDollars", parseInt(this.costtotalHrs).toString());
+            },
+            calculateTotalHrs: function () {
                 var sumHrsTable = this.getView().byId("summaryHrs");
                 var sumHrsItem = this.getView().byId("summaryHrs").getItems();
-                this.totalHrs= 0;
-                this.operationCode="";
-                this.operCode =[];
-                for(var count =0; count < sumHrsItem.length; count++ ){
-                var sPath = this.getView().byId("summaryHrs").getItems()[count].getBindingContextPath();
-                var itemData = this.oViewModel.getProperty(sPath);    
-                if(itemData.Zhours != "" ){
-                    this.totalHrs = this.totalHrs + parseInt( itemData.Zhours);
-                    this.operCode.push(itemData.ZoperCode);
+                this.totalHrs = 0;
+                this.operationCode = "";
+                this.operCode = [];
+                for (var count = 0; count < sumHrsItem.length; count++) {
+                    var sPath = this.getView().byId("summaryHrs").getItems()[count].getBindingContextPath();
+                    var itemData = this.oViewModel.getProperty(sPath);
+                    if (itemData.Zhours != "") {
+                        this.totalHrs = this.totalHrs + parseInt(itemData.Zhours);
+                        this.operCode.push(itemData.ZoperCode);
                     }
-                    else{
+                    else {
                         this.totalHrs = this.totalHrs + 0;
                     }
-                    
-                    }
-                    sumHrsTable.getColumns()[2].getAggregation("footer").setValue(parseInt(this.totalHrs));
-                    this.oViewModel.setProperty("/ZplanWph",parseInt(this.totalHrs.toString()));
-                    this.operationCode = this.removeDuplicates(this.operCode);
-                    this.assignOperationCode(this.operationCode);
-                    
-                
+
+                }
+                sumHrsTable.getColumns()[2].getAggregation("footer").setValue(parseInt(this.totalHrs));
+                this.oViewModel.setProperty("/ZplanWph", parseInt(this.totalHrs.toString()));
+                this.operationCode = this.removeDuplicates(this.operCode);
+                this.assignOperationCode(this.operationCode);
+
+
             },
-            assignOperationCode: function(operCodeArr){
+            onRevSummaryChanges: function () {
+                var sumHrsTable = this.getView().byId("summaryHrs");
+                var sumHrsItem = this.getView().byId("summaryHrs").getItems();
+                this.totalHrs = 0;
+
+                for (var count = 0; count < sumHrsItem.length; count++) {
+                    var itemRevSumHrs = sumHrsItem[count].getCells()[5].getValue();
+                    if (itemRevSumHrs != "") {
+                        this.totalHrs = this.totalHrs + parseInt(itemRevSumHrs);
+                    }
+                    else {
+                        this.totalHrs = this.totalHrs + 0;
+                    }
+
+                }
+                sumHrsTable.getColumns()[5].getAggregation("footer").setValue(parseInt(this.totalHrs));
+                this.oViewModel.setProperty("/ZplanWph", parseInt(this.totalHrs.toString()));
+
+            },
+            assignOperationCode: function (operCodeArr) {
                 // this.oViewModel.setProperty("/ZoperCode1","");
                 // this.getView().byId("operCode").removeAllTokens();
-                var operationCode="";
-                if(operCodeArr.length > 0){
-                    for(var counter=0; counter < operCodeArr.length; counter++ )
-                    {
-                        if(operCodeArr[counter] != ""){
-                            if(counter == operCodeArr.length - 1){
-                                operationCode = operationCode + operCodeArr[counter] ;
+                var operationCode = "";
+                if (operCodeArr.length > 0) {
+                    for (var counter = 0; counter < operCodeArr.length; counter++) {
+                        if (operCodeArr[counter] != "") {
+                            if (counter == operCodeArr.length - 1) {
+                                operationCode = operationCode + operCodeArr[counter];
                             }
-                            else{
-                                operationCode = operationCode + operCodeArr[counter] + ","  ;
+                            else {
+                                operationCode = operationCode + operCodeArr[counter] + ",";
                             }
-                       
+
                         }
                     }
 
-                    this.oViewModel.setProperty("/ZoperCode1",operationCode);
+                    this.oViewModel.setProperty("/ZoperCode1", operationCode);
                 }
-                else{
-                    this.oViewModel.setProperty("/ZoperCode1","");
+                else {
+                    this.oViewModel.setProperty("/ZoperCode1", "");
                 }
-                
+
             },
-            removeDuplicates: function(arr) {
+            removeDuplicates: function (arr) {
                 return arr.filter((item,
                     index) => arr.indexOf(item) === index);
             },
-            prepareCostSummaryHrs: function(){
-                var projectHrs =[];
-                
+            prepareCostSummaryHrs: function () {
+                var projectHrs = [];
+
                 // this.calculateCostHrs();
                 var sumHrsItem = this.getView().byId("costHrs").getItems();
-                for(var count =0; count < sumHrsItem.length; count++ ){
-                var sPath = this.getView().byId("costHrs").getItems()[count].getBindingContextPath();
-                var itemData = this.oViewModel.getProperty(sPath);    
-                projectHrs.push(
-                    {
-                        "ZewaNo" : "0000000000",
-                        "ZsumSupCostCode" : itemData.ZsumSupCostCode,
-                        "ZsumSupCostDes" : itemData.ZsumSupCostDes,
-                        "Zcost" : itemData.Zcost,
-                        "ZtotalCost" : this.costtotalHrs.toString()
-                   }
-                    );
-                    
+                for (var count = 0; count < sumHrsItem.length; count++) {
+                    var sPath = this.getView().byId("costHrs").getItems()[count].getBindingContextPath();
+                    var itemData = this.oViewModel.getProperty(sPath);
+
+                    if(this.oViewModel.getData().ZrevAmend.includes("REV")){
+                        projectHrs.push(
+                            {
+                                "ZewaNo": "0000000000",
+                                "ZsumSupCostCode": itemData.ZsumSupCostCode,
+                                "ZsumSupCostDes": itemData.ZsumSupCostDes,
+                                "Zcost": sumHrsItem[count].getCells()[5].getValue(),
+                                "ZtotalCost": this.costtotalHrs.toString()
+                            }
+                        );
                     }
-                    return projectHrs;
+                    else{
+                        projectHrs.push(
+                            {
+                                "ZewaNo": "0000000000",
+                                "ZsumSupCostCode": itemData.ZsumSupCostCode,
+                                "ZsumSupCostDes": itemData.ZsumSupCostDes,
+                                "Zcost": itemData.Zcost,
+                                "ZtotalCost": this.costtotalHrs.toString()
+                            }
+                        );
+                    }
+                    
+
+                }
+                return projectHrs;
             },
-            prepareSummaryHours: function(){
-                var projectHrs =[];
+            prepareSummaryHours: function () {
+                var projectHrs = [];
                 // this.calculateTotalHrs();
                 var sumHrsItem = this.getView().byId("summaryHrs").getItems();
-                for(var count =0; count < sumHrsItem.length; count++ ){
-                var sPath = this.getView().byId("summaryHrs").getItems()[count].getBindingContextPath();
-                var itemData = this.oViewModel.getProperty(sPath); 
-                 
-                projectHrs.push({
-                    "ZewaNo" : "0000000000",
-                    "ZsumSuphrs" : itemData.ZsumSuphrs,
-                    "ZsumSuphrsDesc":itemData.ZsumSuphrsDesc,
-                    "ZoperCode" : itemData.ZoperCode,
-                    "Zhours" : itemData.Zhours,
-                    "ZtotHours" : this.totalHrs.toString()
-                    // "ZtotHours" : itemData.ZtotHours
+                for (var count = 0; count < sumHrsItem.length; count++) {
+                    var sPath = this.getView().byId("summaryHrs").getItems()[count].getBindingContextPath();
+                    var itemData = this.oViewModel.getProperty(sPath);
+                    if(this.oViewModel.getData().ZrevAmend.includes("REV")){
+                        projectHrs.push({
+                            "ZewaNo": "0000000000",
+                            "ZsumSuphrs": itemData.ZsumSuphrs,
+                            "ZsumSuphrsDesc": itemData.ZsumSuphrsDesc,
+                            "ZoperCode": itemData.ZoperCode,
+                            "Zhours": sumHrsItem[count].getCells()[5].getValue(),
+                            "ZtotHours": this.totalHrs.toString()
+                            // "ZtotHours" : itemData.ZtotHours
+                        }
+                        );
                     }
-                    );
-                
+                    else{
+                        projectHrs.push({
+                            "ZewaNo": "0000000000",
+                            "ZsumSuphrs": itemData.ZsumSuphrs,
+                            "ZsumSuphrsDesc": itemData.ZsumSuphrsDesc,
+                            "ZoperCode": itemData.ZoperCode,
+                            "Zhours": itemData.Zhours,
+                            "ZtotHours": this.totalHrs.toString()
+                            // "ZtotHours" : itemData.ZtotHours
+                        }
+                        );
+                    }
                     
-                    }
-                    return projectHrs;
-            },
-            setOperationCode: function(){
-            // this.operCode = this.getView().byId("operCode").getTokens();
-            var operationCode = "";
+                    
 
-            if(this.operCode.length > 0){
-                for(var count = 0 ; count < this.operCode.length ; count++ ){
-                    if(this.operCode[count] != ""){
-                        if(count == this.operCode.length - 1){
-                            operationCode = operationCode + this.operCode[count] ;
+                    
+
+
+                }
+                return projectHrs;
+            },
+            setOperationCode: function () {
+                // this.operCode = this.getView().byId("operCode").getTokens();
+                var operationCode = "";
+
+                if (this.operCode.length > 0) {
+                    for (var count = 0; count < this.operCode.length; count++) {
+                        if (this.operCode[count] != "") {
+                            if (count == this.operCode.length - 1) {
+                                operationCode = operationCode + this.operCode[count];
+                            }
+                            else {
+                                operationCode = operationCode + this.operCode[count] + ",";
+                            }
+
                         }
-                        else{
-                            operationCode = operationCode + this.operCode[count] + ","  ;
+                    }
+                    this.oViewModel.setProperty("/ZoperCode", operationCode);
+                }
+                else {
+                    this.oViewModel.setProperty("/ZoperCode", "");
+                }
+            },
+            setRDInfoData: function () {
+                this.keyArray = this.getView().byId("rdq0MultiCombo").getSelectedKeys();
+                this.keyArray1 = this.getView().byId("rdq3MultiCombo").getSelectedKeys();
+                this.keyArray2 = this.getView().byId("rdq4MultiCombo").getSelectedKeys();
+                var keyStr = "";
+                var keyStr1 = "";
+                var keyStr2 = "";
+
+
+                if (this.keyArray.length > 1) {
+                    for (var count = 0; count < this.keyArray.length; count++) {
+                        if (this.keyArray[count] != "") {
+                            if (count == this.keyArray.length - 1) {
+                                keyStr = keyStr + this.keyArray[count];
+                            }
+                            else {
+                                keyStr = keyStr + this.keyArray[count] + ",";
+                            }
+
                         }
-                   
                     }
                 }
-                this.oViewModel.setProperty("/ZoperCode",operationCode);
-            }
-            else{
-                this.oViewModel.setProperty("/ZoperCode",""); 
-            }
-            },
-            setRDInfoData: function(){
-                this.keyArray= this.getView().byId("rdq0MultiCombo").getSelectedKeys();
-                this.keyArray1= this.getView().byId("rdq3MultiCombo").getSelectedKeys();
-                this.keyArray2= this.getView().byId("rdq4MultiCombo").getSelectedKeys();
-                var keyStr="";
-                var keyStr1="";
-                var keyStr2="";
-
-
-                if(this.keyArray.length > 1){
-                    for(var count = 0 ; count < this.keyArray.length ; count++ ){
-                        if(this.keyArray[count] != ""){
-                            if(count == this.keyArray.length - 1){
-                                keyStr = keyStr + this.keyArray[count] ;
-                            }
-                            else{
-                                keyStr = keyStr + this.keyArray[count] + ","  ;
-                            }
-                       
-                        }
-                    }
-                }
-                else if(this.keyArray.length === 1){
+                else if (this.keyArray.length === 1) {
                     keyStr = this.keyArray[0];
                 }
-                this.oViewModel.setProperty("/ProjinfoToRd/0/ZrdQualact",keyStr);
+                this.oViewModel.setProperty("/ProjinfoToRd/0/ZrdQualact", keyStr);
 
 
-              
-                if(this.keyArray1.length > 1){
-                    for(var counter = 0 ; counter < this.keyArray1.length ; counter++ ){
-                        if(this.keyArray1[counter] != ""){
-                            if(counter == this.keyArray1.length - 1){
-                                keyStr1 = keyStr1 + this.keyArray1[counter] ;
+
+                if (this.keyArray1.length > 1) {
+                    for (var counter = 0; counter < this.keyArray1.length; counter++) {
+                        if (this.keyArray1[counter] != "") {
+                            if (counter == this.keyArray1.length - 1) {
+                                keyStr1 = keyStr1 + this.keyArray1[counter];
                             }
-                            else{
-                                keyStr1 = keyStr1 + this.keyArray1[counter] + ","  ;
+                            else {
+                                keyStr1 = keyStr1 + this.keyArray1[counter] + ",";
                             }
-                       
+
                         }
                     }
                 }
-                else if(this.keyArray1.length === 1){
+                else if (this.keyArray1.length === 1) {
                     keyStr1 = this.keyArray1[0];
                 }
-                this.oViewModel.setProperty("/ProjinfoToRd/0/ZrdActivitiesQ3",keyStr1);
+                this.oViewModel.setProperty("/ProjinfoToRd/0/ZrdActivitiesQ3", keyStr1);
 
 
-                if(this.keyArray2.length > 1){
-                    for(var coun = 0 ; coun < this.keyArray2.length ; coun++ ){
-                        if(this.keyArray2[coun] != ""){
-                            if(coun == this.keyArray2.length - 1){
-                                keyStr2 = keyStr2 + this.keyArray2[coun] ;
+                if (this.keyArray2.length > 1) {
+                    for (var coun = 0; coun < this.keyArray2.length; coun++) {
+                        if (this.keyArray2[coun] != "") {
+                            if (coun == this.keyArray2.length - 1) {
+                                keyStr2 = keyStr2 + this.keyArray2[coun];
                             }
-                            else{
-                                keyStr2 = keyStr2 + this.keyArray2[coun] + ","  ;
+                            else {
+                                keyStr2 = keyStr2 + this.keyArray2[coun] + ",";
                             }
-                       
+
                         }
                     }
                 }
-                else if(this.keyArray2.length === 1){
+                else if (this.keyArray2.length === 1) {
                     keyStr2 = this.keyArray2[0];
                 }
-                this.oViewModel.setProperty("/ProjinfoToRd/0/ZrdActPerfQ4",keyStr2);
+                this.oViewModel.setProperty("/ProjinfoToRd/0/ZrdActPerfQ4", keyStr2);
 
 
             },
-            validateSelection: function(oEvent){
+            validateSelection: function (oEvent) {
                 var key = oEvent.getSource().getSelectedKey();
-                if((key === "Yes") || (key === "No")){
+                if ((key === "Yes") || (key === "No")) {
                     oEvent.getSource().setValueState("None");
                     oEvent.getSource().setValueStateText("");
-                    }
-                else{
+                }
+                else {
                     oEvent.getSource().setValueState("Error");
                     oEvent.getSource().setValueStateText("Selected Value is not Correct.Kindly select from dropdown");
                 }
-                
+
             },
             // handleRdq2: function(oEvent){
             //     this.oViewModel.setProperty("/ProjinfoToRd/0/ZrdDivisionQ2",oEvent.getParameter("value"));
@@ -661,18 +736,18 @@ sap.ui.define([
             // handleZfund: function(oEvent){
             //     this.oViewModel.setProperty("Zfunded",oEvent.getParameter("value"));
             // },
-            fetchWorkPkgFunding: function(sSelectedKey){
+            fetchWorkPkgFunding: function (sSelectedKey) {
                 var that = this;
                 this.oDataModel.read("/EWA_WPFNEWSet", {
                     urlParameters: {
                         "$filter": "Zwbselement eq '" + sSelectedKey + "'"
-                      
+
                     },
                     success: function (oData) {
-                        that.oViewModel.setProperty("/Zfunded",oData.results[0].Zfunded);
-                        that.oViewModel.setProperty("/ZprismProjid",oData.results[0].PRISMID);
-                        that.oViewModel.setProperty("/ZprogramCode",oData.results[0].PROGRMCODE);
-                        that.oViewModel.setProperty("/Zcustomer",oData.results[0].CUSTOMER);
+                        that.oViewModel.setProperty("/Zfunded", oData.results[0].Zfunded);
+                        that.oViewModel.setProperty("/ZprismProjid", oData.results[0].PRISMID);
+                        that.oViewModel.setProperty("/ZprogramCode", oData.results[0].PROGRMCODE);
+                        that.oViewModel.setProperty("/Zcustomer", oData.results[0].CUSTOMER);
                         // var dataModel = new JSONModel();
                         // dataModel.setData({
                         //     WrkPakageSet: oData.results
@@ -686,28 +761,28 @@ sap.ui.define([
                     }
                 });
             },
-            showMaterialValueHelp: function(){
+            showMaterialValueHelp: function () {
                 var that = this;
                 this._matHelpDialog = null;
-			    this._matHelpDialog = sap.ui.xmlfragment(
-				"com.parker.ewaformtemp.view.material",
-				this
-			);
-            
-            this.getView().addDependent(this._matHelpDialog);
-            if(this.getOwnerComponent().getModel("MaterialModel") != undefined){
-                this.getOwnerComponent().getModel("MaterialModel").setData({"MaterialSet":[]})
-            }
-            this._matHelpDialog.open();
-            
+                this._matHelpDialog = sap.ui.xmlfragment(
+                    "com.parker.ewaformtemp.view.material",
+                    this
+                );
+
+                this.getView().addDependent(this._matHelpDialog);
+                if (this.getOwnerComponent().getModel("MaterialModel") != undefined) {
+                    this.getOwnerComponent().getModel("MaterialModel").setData({ "MaterialSet": [] })
+                }
+                this._matHelpDialog.open();
+
             },
-            handleSearch: function(oEvent){
+            handleSearch: function (oEvent) {
                 var that = this;
                 var sSelectedPlant = oEvent.getParameter("value");
                 this.oDataModel.read("/EWA_F4_MATERIALSet", {
                     urlParameters: {
                         "$filter": "Werks eq '" + sSelectedPlant + "'"
-                      
+
                     },
                     success: function (oData) {
                         var dataModel = new JSONModel();
@@ -723,43 +798,47 @@ sap.ui.define([
                     }
                 });
             },
-            handleClose: function(){
+            handleClose: function () {
                 if (this._matHelpDialog) {
                     this._matHelpDialog.destroy(true);
                     this._matHelpDialog = null;
                 }
             },
-            handleConfirm: function(oEvent){
+            handleConfirm: function (oEvent) {
                 var sPath = oEvent.getParameter("selectedItem").getBindingContextPath();
                 var selectedItem = this.getOwnerComponent().getModel("MaterialModel").getProperty(sPath);
-                this.oViewModel.setProperty("/ZpartnoUnitdesc",selectedItem.Matnr);
+                this.oViewModel.setProperty("/ZpartnoUnitdesc", selectedItem.Matnr);
                 if (this._matHelpDialog) {
                     this._matHelpDialog.destroy(true);
                     this._matHelpDialog = null;
                 }
             },
-            onRevisionChange: function(oEvent){
+            onRevisionChange: function (oEvent) {
                 var selKey = oEvent.getParameter("newValue");
                 var dataArray = this.getOwnerComponent().getModel("RevModel").getData().RevisionSet;
-                if(oEvent.getSource().getSelectedItem().getAdditionalText() ==="INVALID"){
+                if (oEvent.getSource().getSelectedItem().getAdditionalText() === "INVALID") {
                     oEvent.getSource().setValueState("Error");
                     oEvent.getSource().setValueStateText("Invalid Selection");
                     sap.m.MessageBox.error("Invalid Selection");
+                    this.getView().byId("summaryHrs").getColumns()[5].setVisible(false);
+                    this.getView().byId("costHrs").getColumns()[5].setVisible(false);
                 }
-                else{
+                else {
                     oEvent.getSource().setValueState("None");
                     oEvent.getSource().setValueStateText("");
                     var object = dataArray.find(obj => obj.ZREV_AMEND === selKey);
                     console.log(object);
-                    this.oViewModel.setProperty("/ZworkDesc",object.ZWORK_DESC);
+                    this.oViewModel.setProperty("/ZworkDesc", object.ZWORK_DESC);
                     // this.oViewModel.setProperty("/ZoperCode1",object.ZREV_AMEND);
-                    this.oViewModel.setProperty("/ZplanWph",object.ZPLAN_WPH);
-                    this.oViewModel.setProperty("/ZmatDollars",object.ZMAT_DOLLARS);
+                    this.oViewModel.setProperty("/ZplanWph", object.ZPLAN_WPH);
+                    this.oViewModel.setProperty("/ZmatDollars", object.ZMAT_DOLLARS);
+                    this.getView().byId("summaryHrs").getColumns()[5].setVisible(true);
+                    this.getView().byId("costHrs").getColumns()[5].setVisible(true);
                 }
             },
-            setLocalTimeZoneZone : function (datevalue) {
+            setLocalTimeZoneZone: function (datevalue) {
                 var dateTime = new Date(datevalue);
-                if ((datevalue === null) || (datevalue ==="")) {
+                if ((datevalue === null) || (datevalue === "")) {
                     return null;
                 }
                 else if (dateTime !== undefined && dateTime !== null && dateTime !== "") {
@@ -774,8 +853,8 @@ sap.ui.define([
                     return null;
                 }
             }
-           
-            
-            
+
+
+
         });
     });
